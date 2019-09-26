@@ -111,6 +111,8 @@ export class CourseSearchComponent implements OnInit, OnDestroy {
     }
     this.searchService.courseSearch(option)
     .subscribe(data => {
+      console.log(data.result.course,"data.result.cours");
+console.log("content list ",data.result.content);
         this.showLoader = false;
         this.facetsList = this.searchService.processFilterData(_.get(data, 'result.facets'));
         this.paginationDetails = this.paginationService.getPager(data.result.count, this.paginationDetails.currentPage,
@@ -118,7 +120,9 @@ export class CourseSearchComponent implements OnInit, OnDestroy {
         const { constantData, metaData, dynamicFields } = this.configService.appConfig.CoursePageSection.course;
         this.contentList = _.map(data.result.course, (content: any) =>
           this.utilService.processContent(content, constantData, dynamicFields, metaData));
+          console.log(this.contentList,"contentList");
     }, err => {
+      console.log(err,"err");
         this.showLoader = false;
         this.contentList = [];
         this.facetsList = [];
