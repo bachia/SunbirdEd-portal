@@ -48,7 +48,7 @@ app.use(session({
   store: memoryStore
 }))
 
-app.use(keycloak.middleware({ admin: '/callback', logout: '/logout' }))
+app.use(keycloak.middleware({ admin: '/callback', logout: '/logout?redirect_uri="https://community.shikshalokam.org"' }))
 
 // announcement api routes
 app.use('/announcement/v1', bodyParser.urlencoded({ extended: false }),
@@ -56,7 +56,7 @@ app.use('/announcement/v1', bodyParser.urlencoded({ extended: false }),
 
 app.all('/logoff', endSession, (req, res) => {
   res.cookie('connect.sid', '', { expires: new Date() })
-  res.redirect('/logout')
+  res.redirect('/logout?redirect_uri="https://community.shikshalokam.org')
 })
 
 // health check api
