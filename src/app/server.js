@@ -63,6 +63,10 @@ app.all('/logoff', endSession, (req, res) => {
 app.get('/', (req, res) => {
   res.redirect('https://community.shikshalokam.org');
 })
+//Shikshalokam Specific home redirect
+app.get('/home', (req, res) => {
+  res.redirect('/resources');
+})
 
 // health check api
 app.get('/health', healthService.createAndValidateRequestBody, healthService.checkHealth)
