@@ -59,6 +59,11 @@ app.all('/logoff', endSession, (req, res) => {
   res.redirect('/logout?redirect_uri=https://community.shikshalokam.org')
 })
 
+//Shikshalokam Specific logout
+app.get('/', (req, res) => {
+  res.redirect('https://community.shikshalokam.org');
+})
+
 // health check api
 app.get('/health', healthService.createAndValidateRequestBody, healthService.checkHealth)
 
