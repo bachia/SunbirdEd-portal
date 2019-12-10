@@ -98,7 +98,9 @@ export class AppComponent implements OnInit {
       this.tenantService.getTenantInfo(this.slug);
       this.setPortalTitleLogo();
       this.telemetryService.initialize(this.getTelemetryContext());
-      this.deviceRegisterService.registerDevice(this.channel);
+      // Commented by SL as it is not required
+      // this.deviceRegisterService.registerDevice(this.channel);
+      // Commented by SL 
       this.checkTncAndFrameWorkSelected();
       this.initApp = true;
     }, error => {
