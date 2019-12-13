@@ -153,7 +153,7 @@ export class UserService {
         if(userid) {
             console.log("returning data");
             console.log(data);
-            console.log("returns now"):
+            console.log("returns now");
           return data;
         }
         this.setUserProfile(data);
