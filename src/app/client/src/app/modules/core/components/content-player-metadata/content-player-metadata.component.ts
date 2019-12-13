@@ -1,4 +1,5 @@
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ConceptPickerService } from './../../services';
 import { UserService } from './../../services';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
