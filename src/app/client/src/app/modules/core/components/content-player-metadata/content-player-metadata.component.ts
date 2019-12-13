@@ -25,13 +25,8 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.metadata = { ...this.contentData };
-    console.log("======->ngOnInit of content player component");
-    console.log(this.metadata);
-    console.log("Created By:: "+this.metadata.createdBy);
     this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
       (upData: any) => {
-          console.log(upData.result.response.organisations);
-          console.log(upData.result.response.rootOrgId);
         var orgs_count = upData.result.response.organisations.length;
         var content_orgs = "";
         if(orgs_count > 1) {
@@ -47,9 +42,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
         if(content_orgs == "") {
           content_orgs = upData.result.response.rootOrgName;
         }
-        console.log(content_orgs);
         this.metadata.content_orgs = content_orgs;
-        console.log("======->log end of content player component");
     });
     this.validateContent();
     this.getConceptsNames();

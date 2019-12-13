@@ -141,7 +141,6 @@ export class UserService {
   }
 
   public getUserProfileById(userid): any {
-    console.log("getUserProfile:: "+userid);
     const option = {
       url: this.config.urlConFig.URLS.USER.GET_PROFILE + userid,
       param: this.config.urlConFig.params.userReadParam
