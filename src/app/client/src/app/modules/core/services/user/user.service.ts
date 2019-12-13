@@ -140,14 +140,14 @@ export class UserService {
     return this._sessionId;
   }
 
-  public getUserProfileById(userid): void {
+  public getUserProfileById(userid): any {
     console.log("getUserProfile:: "+userid);
     const option = {
       url: this.config.urlConFig.URLS.USER.GET_PROFILE + userid,
       param: this.config.urlConFig.params.userReadParam
     };
     return this.learnerService.get(option).map(res => {
-        return res.json();
+        return res;
       });
   }
 
