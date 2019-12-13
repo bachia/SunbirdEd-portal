@@ -1,4 +1,5 @@
-<div class="ui segment">
+<div class="ui segment my-segment">
+    <!-- sriram checking to see if this is the page to effect -->
     <div class="mb-20" *ngIf="metadata.description">
         <div class="header mb-10">
             {{resourceService.frmelmnts.lbl.description}}
@@ -12,7 +13,7 @@
             <span class="ui expand-or-minimize mouse-pointer" (click)="readMore = false">{{resourceService.frmelmnts.lbl.readless}}</span>
         </div>
     </div>
-    <div class="header"> 
+    <div class="header">
         <span class="header">{{resourceService.frmelmnts.lbl.contentinformation}}</span>
     </div>
     <div class="ui middle aligned list">
@@ -74,7 +75,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="item p-0 mb-5">
             <div class="ui grid stackable m-0">
                 <div class="three wide column">

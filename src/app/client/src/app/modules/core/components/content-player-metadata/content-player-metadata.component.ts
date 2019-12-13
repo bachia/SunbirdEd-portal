@@ -1,5 +1,6 @@
 import { Subscription } from 'rxjs';
 import { ConceptPickerService } from './../../services';
+import { UserService } from './../../services';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import * as _ from 'lodash';
 import { ContentData, ResourceService } from '@sunbird/shared';
@@ -20,10 +21,17 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
   showContentCreditsModal: boolean;
 
   @Input() contentData: ContentData;
-  constructor(public resourceService: ResourceService, public conceptPickerService: ConceptPickerService) { }
+  constructor(public resourceService: ResourceService, public conceptPickerService: ConceptPickerService, public userService: UserService) { }
 
   ngOnInit() {
     this.metadata = { ...this.contentData };
+    console.log("======->ngOnInit of content player component");
+    console.log(this.metadata);
+    console.log("Created By:: "+this.metadata.createdBy);
+    let userProfileData = this.userService.getUserProfile();
+    console.log(userProfileData);
+    console.log("======->log end of content player component");
+
     this.validateContent();
     this.getConceptsNames();
   }

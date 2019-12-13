@@ -142,13 +142,20 @@ export class UserService {
   /**
    * method to fetch user profile from server.
    */
-  public getUserProfile(): void {
+  public getUserProfile(userid=null): void {
+      console.log("getUserProfile:: "+userid);
     const option = {
       url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
       param: this.config.urlConFig.params.userReadParam
     };
     this.learnerService.get(option).subscribe(
       (data: ServerResponse) => {
+        if(userid) {
+            console.log("returning data");
+            console.log(data);
+            console.log("returns now");
+          return data;
+        }
         this.setUserProfile(data);
       },
       (err: ServerResponse) => {
@@ -180,6 +187,10 @@ export class UserService {
    */
   private setUserProfile(res: ServerResponse) {
     const profileData = res.result.response;
+    //added by sriram.
+    console.log("=====->setUserProfile called");
+    console.log(profileData);
+    console.log("=====->end of log");
     const orgRoleMap = {};
     const hashTagIds = [];
     this._channel = _.get(profileData, 'rootOrg.hashTagId');
