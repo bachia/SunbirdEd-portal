@@ -142,13 +142,16 @@ export class UserService {
   /**
    * method to fetch user profile from server.
    */
-  public getUserProfile(): void {
+  public getUserProfile(userid=null): void {
     const option = {
       url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
       param: this.config.urlConFig.params.userReadParam
     };
     this.learnerService.get(option).subscribe(
       (data: ServerResponse) => {
+        if(userid) {
+          return data;
+        }
         this.setUserProfile(data);
       },
       (err: ServerResponse) => {
