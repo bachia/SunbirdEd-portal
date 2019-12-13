@@ -30,26 +30,26 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
     console.log("Created By:: "+this.metadata.createdBy);
     this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
       (upData: any) => {
-          console.log(upData.result.response);
-        /*console.log(upData.result.response.batches[0].organisations);
-        console.log(upData.result.response.batches[0].rootOrgId);
-        var orgs_count = upData.result.response.batches[0].organisations.length;
+          console.log(upData.result.response.organisations);
+          console.log(upData.result.response.rootOrgId);
+        var orgs_count = upData.result.response.organisations.length;
         var content_orgs = "";
         if(orgs_count > 1) {
             for(var org_index = 0; org_index < orgs_count; org_index++) {
-                if(upData.result.response.batches[0].rootOrgId != upData.result.response.batches[0].organisations[org_index].organisationId) {
+                if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
                   if(content_orgs != "") {
                     content_orgs += ", ";
                   }
-                  content_orgs += upData.result.response.batches[0].organisations[org_index].orgName;
+                  content_orgs += upData.result.response.organisations[org_index].orgName;
                 }
             }
         }
         if(content_orgs == "") {
-          content_orgs = upData.result.response.batches[0].rootOrgName;
+          content_orgs = upData.result.response.rootOrgName;
         }
         console.log(content_orgs);
-        console.log("======->log end of content player component");*/
+        this.metadata.content_orgs = content_orgs;
+        console.log("======->log end of content player component");
     });
     this.validateContent();
     this.getConceptsNames();
