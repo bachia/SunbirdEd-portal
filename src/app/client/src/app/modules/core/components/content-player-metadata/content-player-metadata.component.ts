@@ -30,7 +30,24 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
     console.log("Created By:: "+this.metadata.createdBy);
     this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
       (upData: any) => {
-        console.log(upData);
+        console.log(upData.result.response.batches[0].organisations);
+        console.log(upData.result.response.batches[0].rootOrgId);
+        var orgs_count = upData.result.response.batches[0].organisations.length;
+        var content_orgs = "";
+        if(orgs_count > 1) {
+            for(org_index = 0; org_index < orgs_count; org++) {
+                if(upData.result.response.batches[0].rootOrgId != upData.result.response.batches[0].organisations[org_index].organisationId) {
+                  if(content_orgs != "") {
+                    content_orgs += ", ";
+                  }
+                  content_orgs += upData.result.response.batches[0].organisations[org_index].orgName;
+                }
+            }
+        }
+        if(content_orgs == "") {
+          content_orgs = upData.result.response.batches[0].rootOrgName;
+        }
+        console.log(content_orgs);
         console.log("======->log end of content player component");
     });
     this.validateContent();
