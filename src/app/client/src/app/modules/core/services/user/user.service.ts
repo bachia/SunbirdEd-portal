@@ -145,7 +145,7 @@ export class UserService {
   public getUserProfile(userid=null): void {
       console.log("getUserProfile:: "+userid);
       var url_str = this.config.urlConFig.URLS.USER.GET_PROFILE + ((userid != null) ? userid : this.userid);
-      console.log(url);
+      console.log(url_str);
     const option = {
       url: url_str,
       param: this.config.urlConFig.params.userReadParam
