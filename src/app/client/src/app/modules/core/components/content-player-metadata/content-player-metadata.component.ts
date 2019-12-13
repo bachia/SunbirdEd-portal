@@ -47,7 +47,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
         this.metadata.content_orgs = content_orgs;
     });
     if(content_orgs == "") {
-      content_orgs = metadata.orgDetails?.orgName;
+      content_orgs = metadata.orgDetails.orgName;
     }
     this.validateContent();
     this.getConceptsNames();
