@@ -154,8 +154,8 @@ export class UserService {
       (data: ServerResponse) => {
         if(userid) {
             console.log("returning data");
-            console.log(data);
-            console.log("returns now");
+            //console.log(data);
+            //console.log("returns now");
           return data;
         }
         this.setUserProfile(data);
