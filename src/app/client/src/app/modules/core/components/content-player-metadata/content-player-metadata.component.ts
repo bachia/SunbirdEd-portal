@@ -25,13 +25,11 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.metadata = { ...this.contentData };
-    if(this.metadata.createdBy) {
-        console.log("Created By:: "+this.metadata.createdBy);
-        let userProfileData = this.userService.getUserProfile();
-        console.log(userProfileData);
-    }
     console.log("======->ngOnInit of content player component");
     console.log(this.metadata);
+    console.log("Created By:: "+this.metadata.createdBy);
+    let userProfileData = this.userService.getUserProfile();
+    console.log(userProfileData);
     console.log("======->log end of content player component");
 
     this.validateContent();
