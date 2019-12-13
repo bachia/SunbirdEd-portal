@@ -139,25 +139,28 @@ export class UserService {
   get sessionId(): string {
     return this._sessionId;
   }
+
+  public getUserProfileById(userid): void {
+    console.log("getUserProfile:: "+userid);
+    const option = {
+      url: this.config.urlConFig.URLS.USER.GET_PROFILE + userid,
+      param: this.config.urlConFig.params.userReadParam
+    };
+    return this.learnerService.get(option).map(res => {
+        return res.json();
+      });
+  }
+
   /**
    * method to fetch user profile from server.
    */
   public getUserProfile(userid=null): void {
-      console.log("getUserProfile:: "+userid);
-      var url_str = this.config.urlConFig.URLS.USER.GET_PROFILE + ((userid != null) ? userid : this.userid);
-      console.log(url_str);
     const option = {
-      url: url_str,
+      url: this.config.urlConFig.URLS.USER.GET_PROFILE + this.userid,
       param: this.config.urlConFig.params.userReadParam
     };
     this.learnerService.get(option).subscribe(
       (data: ServerResponse) => {
-        if(userid) {
-            console.log("returning data");
-            //console.log(data);
-            //console.log("returns now");
-          return data;
-        }
         this.setUserProfile(data);
       },
       (err: ServerResponse) => {
