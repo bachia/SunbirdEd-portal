@@ -35,7 +35,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
         var orgs_count = upData.result.response.batches[0].organisations.length;
         var content_orgs = "";
         if(orgs_count > 1) {
-            for(var org_index = 0; org_index < orgs_count; org++) {
+            for(var org_index = 0; org_index < orgs_count; org_index++) {
                 if(upData.result.response.batches[0].rootOrgId != upData.result.response.batches[0].organisations[org_index].organisationId) {
                   if(content_orgs != "") {
                     content_orgs += ", ";
