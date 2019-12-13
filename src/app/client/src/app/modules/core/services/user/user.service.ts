@@ -144,8 +144,9 @@ export class UserService {
    */
   public getUserProfile(userid=null): void {
       console.log("getUserProfile:: "+userid);
+      var pass_id = (userid != null) ? userid : this.userid;
     const option = {
-      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${this.userid}`,
+      url: `${this.config.urlConFig.URLS.USER.GET_PROFILE}${pass_id}`,
       param: this.config.urlConFig.params.userReadParam
     };
     this.learnerService.get(option).subscribe(
