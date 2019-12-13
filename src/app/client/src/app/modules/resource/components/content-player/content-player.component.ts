@@ -20,8 +20,8 @@ import { IInteractEventObject, IInteractEventEdata, IImpressionEventInput } from
 })
 export class ContentPlayerComponent implements OnInit {
   /**
-	 * telemetryImpression
-	*/
+     * telemetryImpression
+    */
   telemetryImpression: IImpressionEventInput;
 
   closeIntractEdata: IInteractEventEdata;
@@ -62,8 +62,8 @@ export class ContentPlayerComponent implements OnInit {
    */
   contentData: ContentData;
   /**
-	 * telemetryShareData
-	*/
+     * telemetryShareData
+    */
   telemetryShareData: Array<ITelemetryShare>;
   /**
    * to show loader while copying content

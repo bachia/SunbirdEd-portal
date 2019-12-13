@@ -180,6 +180,10 @@ export class UserService {
    */
   private setUserProfile(res: ServerResponse) {
     const profileData = res.result.response;
+    //added by sriram.
+    console.log("=====->setUserProfile called");
+    console.log(profileData);
+    console.log("=====->end of log");
     const orgRoleMap = {};
     const hashTagIds = [];
     this._channel = _.get(profileData, 'rootOrg.hashTagId');
