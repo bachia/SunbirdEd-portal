@@ -15,6 +15,9 @@
                     "Collection"
                 ]
             },
+            "searchCriteria": {
+                "channel":["0124487522476933120"]
+            },
             "corePluginsPackaged": true,
             "modalId": "collectionEditor",
             "dispatcher": "local",
@@ -283,6 +286,9 @@
             "build_number": "1.0",
             "headerLogo": "",
             "aws_s3_urls": [],
+            "searchCriteria": {
+                "channel":["0124487522476933120"]
+            },
             "plugins": [
                 {
                     "id": "org.ekstep.sunbirdcommonheader",
@@ -352,6 +358,11 @@
             "alertOnUnload": true,
             "headerLogo": "",
             "loadingImage": "",
+            
+            "searchCriteria": {
+                "channel":["0124487522476933120"]
+            },
+        
             "plugins": [
                 {
                     "id": "org.ekstep.sunbirdcommonheader",
