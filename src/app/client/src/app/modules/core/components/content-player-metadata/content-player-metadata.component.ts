@@ -30,7 +30,8 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
     console.log("Created By:: "+this.metadata.createdBy);
     this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
       (upData: any) => {
-        console.log(upData.result.response.batches[0].organisations);
+          console.log(upData.result.response);
+        /*console.log(upData.result.response.batches[0].organisations);
         console.log(upData.result.response.batches[0].rootOrgId);
         var orgs_count = upData.result.response.batches[0].organisations.length;
         var content_orgs = "";
@@ -48,7 +49,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
           content_orgs = upData.result.response.batches[0].rootOrgName;
         }
         console.log(content_orgs);
-        console.log("======->log end of content player component");
+        console.log("======->log end of content player component");*/
     });
     this.validateContent();
     this.getConceptsNames();
