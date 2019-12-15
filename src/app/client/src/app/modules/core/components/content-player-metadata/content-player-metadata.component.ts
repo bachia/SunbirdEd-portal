@@ -34,6 +34,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
         console.log("ORGs Count:: "+orgs_count);
         if(orgs_count > 1) {
             for(var org_index = 0; org_index < orgs_count; org_index++) {
+                console.log("rootorgId: " + upData.result.response.rootOrgId + " vs current org id: " + upData.result.response.organisations[org_index].organisationId);
                 if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
                   if(content_orgs != "") {
                     content_orgs += ", ";
@@ -43,6 +44,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
             }
             console.log("CONTENT ORGS INSIDE: " + content_orgs);
         }
+
         if(content_orgs == "") {
           content_orgs = upData.result.response.rootOrgName;
           console.log("CONTENT ORGS FIRST OUT: " + content_orgs);
@@ -53,7 +55,9 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
       content_orgs = this.metadata.orgDetails.orgName;
       console.log("CONTENT ORGS OUTSIDE: " + content_orgs);
     }
+    console.log("orgs to be shown as:: " + content_orgs);
     this.metadata.content_orgs = content_orgs;
+
     this.validateContent();
     this.getConceptsNames();
   }

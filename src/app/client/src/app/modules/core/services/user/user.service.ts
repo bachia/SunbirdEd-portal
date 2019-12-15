@@ -4,6 +4,7 @@ import { ContentService } from './../content/content.service';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
+import 'rxjs/add/operator/map';
 import { UUID } from 'angular2-uuid';
 import * as _ from 'lodash';
 import { HttpClient } from '@angular/common/http';
