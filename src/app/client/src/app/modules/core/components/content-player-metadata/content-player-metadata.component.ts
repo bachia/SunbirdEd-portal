@@ -41,6 +41,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
                     this.metadata.content_orgs += ", ";
                   }
                   this.metadata.content_orgs += upData.result.response.organisations[org_index].orgName;
+                  console.log("adding ORG: " + upData.result.response.organisations[org_index].orgName);
                 }
             }
             console.log("CONTENT ORGS INSIDE: " + this.metadata.content_orgs);
