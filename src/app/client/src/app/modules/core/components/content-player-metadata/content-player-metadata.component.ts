@@ -43,20 +43,23 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
                 }
             }
             console.log("CONTENT ORGS INSIDE: " + content_orgs);
+            this.metadata.content_orgs = content_orgs;
         }
 
         if(content_orgs == "") {
           content_orgs = upData.result.response.rootOrgName;
           console.log("CONTENT ORGS FIRST OUT: " + content_orgs);
+          this.metadata.content_orgs = content_orgs;
         }
 
     });
     if(content_orgs == "" && this.metadata.orgDetails) {
       content_orgs = this.metadata.orgDetails.orgName;
       console.log("CONTENT ORGS OUTSIDE: " + content_orgs);
+      console.log("orgs to be shown as:: " + content_orgs);
+      this.metadata.content_orgs = content_orgs;
     }
-    console.log("orgs to be shown as:: " + content_orgs);
-    this.metadata.content_orgs = content_orgs;
+
 
     this.validateContent();
     this.getConceptsNames();
