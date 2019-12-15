@@ -27,7 +27,7 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.metadata = { ...this.contentData };
-    var content_orgs = "";
+    this.metadata.content_orgs = "";
     this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
       (upData: any) => {
         var orgs_count = upData.result.response.organisations.length;
@@ -36,28 +36,24 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
             for(var org_index = 0; org_index < orgs_count; org_index++) {
                 console.log("rootorgId: " + upData.result.response.rootOrgId + " vs current org id: " + upData.result.response.organisations[org_index].organisationId);
                 if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
-                  if(content_orgs != "") {
-                    content_orgs += ", ";
+                  if(this.metadata.content_orgs != "") {
+                    this.metadata.content_orgs += ", ";
                   }
-                  content_orgs += upData.result.response.organisations[org_index].orgName;
+                  this.metadata.content_orgs += upData.result.response.organisations[org_index].orgName;
                 }
             }
-            console.log("CONTENT ORGS INSIDE: " + content_orgs);
-            this.metadata.content_orgs = content_orgs;
+            console.log("CONTENT ORGS INSIDE: " + this.metadata.content_orgs);
         }
 
-        if(content_orgs == "") {
-          content_orgs = upData.result.response.rootOrgName;
-          console.log("CONTENT ORGS FIRST OUT: " + content_orgs);
-          this.metadata.content_orgs = content_orgs;
+        if(this.metadata.content_orgs == "") {
+          this.metadata.content_orgs = upData.result.response.rootOrgName;
+          console.log("CONTENT ORGS FIRST OUT: " + this.metadata.content_orgs);
         }
 
     });
-    if(content_orgs == "" && this.metadata.orgDetails) {
-      content_orgs = this.metadata.orgDetails.orgName;
-      console.log("CONTENT ORGS OUTSIDE: " + content_orgs);
-      console.log("orgs to be shown as:: " + content_orgs);
-      this.metadata.content_orgs = content_orgs;
+    if(this.metadata.content_orgs == "" && this.metadata.orgDetails) {
+      this.metadata.content_orgs = this.metadata.orgDetails.orgName;
+      console.log("CONTENT ORGS OUTSIDE: " + this.metadata.content_orgs);
     }
 
 
