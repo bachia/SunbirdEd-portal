@@ -16,7 +16,9 @@
                 ]
             },
             "searchCriteria": {
-                "channel":["0124487522476933120"]
+                "filters": {
+                    "channel":["0124487522476933120"]
+                }
             },
             "corePluginsPackaged": true,
             "modalId": "collectionEditor",
@@ -287,7 +289,9 @@
             "headerLogo": "",
             "aws_s3_urls": [],
             "searchCriteria": {
-                "channel":["0124487522476933120"]
+                "filters": {
+                    "channel":["0124487522476933120"]
+                }
             },
             "plugins": [
                 {
@@ -360,7 +364,9 @@
             "loadingImage": "",
             
             "searchCriteria": {
-                "channel":["0124487522476933120"]
+                "filters": {
+                    "channel":["0124487522476933120"]
+                }
             },
         
             "plugins": [
