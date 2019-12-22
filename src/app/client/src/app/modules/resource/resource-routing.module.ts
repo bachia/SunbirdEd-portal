@@ -12,7 +12,9 @@ const routes: Routes = [
     data: {
       breadcrumbs: [{ label: 'Home', url: '/home' }, { label: 'Library', url: '' }],
       telemetry: { env: telemetryEnv, pageid: 'library', type: 'view', subtype: 'paginate' },
-      softConstraints: {badgeAssertions: 98, board: 99, channel: 100}
+      //Sriram -- Commented out channel 100 per the solution suggested for ticket #721
+      //softConstraints: {badgeAssertions: 98, board: 99, channel: 100}
+      softConstraints: {badgeAssertions: 98, board: 99}
     }
   }, {
     path: 'view-all/:section/:pageNumber', component: ViewAllComponent,
@@ -22,7 +24,9 @@ const routes: Routes = [
         env: telemetryEnv, pageid: 'view-all', type: 'view', subtype: 'paginate'
       },
       filterType: 'library',
-      softConstraints: {badgeAssertions: 98, board: 99, channel: 100},
+      //Sriram -- Commented out channel 100 per the solution suggested for ticket #721
+      //softConstraints: {badgeAssertions: 98, board: 99, channel: 100},
+      softConstraints: {badgeAssertions: 98, board: 99},
       applyMode: true
     }
   },

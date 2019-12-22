@@ -8,7 +8,9 @@ const routes: Routes = [
       telemetry: {
         env: 'explore', pageid: 'explore', type: 'view', subtype: 'paginate'
       },
-      softConstraints: { badgeAssertions: 98, board: 99,  channel: 100 }
+      //Sriram -- Commented out channel 100 per the solution suggested for ticket #721
+      //softConstraints: { badgeAssertions: 98, board: 99,  channel: 100 }
+      softConstraints: { badgeAssertions: 98, board: 99}
     }
   },
   {
@@ -18,7 +20,9 @@ const routes: Routes = [
         env: 'explore', pageid: 'view-all', type: 'view', subtype: 'paginate'
       },
       filterType: 'explore',
-      softConstraints: {badgeAssertions: 98, board: 99, channel: 100},
+      //Sriram -- Commented out channel 100 per the solution suggested for ticket #721
+      //softConstraints: { badgeAssertions: 98, board: 99,  channel: 100 }
+      softConstraints: {badgeAssertions: 98, board: 99},
       applyMode: true
     }
   },
@@ -27,7 +31,9 @@ const routes: Routes = [
         telemetry: {
           env: 'explore', pageid: 'explore-search', type: 'view', subtype: 'paginate'
         },
-        softConstraints: { badgeAssertions: 98, board: 99,  channel: 100 }
+        //Sriram -- Commented out channel 100 per the solution suggested for ticket #721
+        //softConstraints: { badgeAssertions: 98, board: 99,  channel: 100 }
+        softConstraints: { badgeAssertions: 98, board: 99 }
       }
     }
   ];

@@ -118,12 +118,12 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
   */
   public permissionService: PermissionService;
   /**
-	 * telemetryImpression
-	*/
+     * telemetryImpression
+    */
   telemetryImpression: IImpressionEventInput;
   /**
-	 * inviewLogs
-	*/
+     * inviewLogs
+    */
   inviewLogs = [];
   /**
     * Constructor to create injected service(s) object
@@ -207,6 +207,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     const searchParams = {
       filters: {
         status: ['Review'],
+        //Sriram -- to check this for discussion
         createdFor: this.userService.RoleOrgMap && _.compact(_.union(rolesMap['CONTENT_REVIEWER'],
           rolesMap['BOOK_REVIEWER'],
           rolesMap['CONTENT_REVIEW'])),
@@ -222,6 +223,8 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
       query: _.toString(bothParams.queryParams.query),
       sort_by: this.sort
     };
+    console.log("UPFORREVIEW FILTERS:");
+    console.log(searchParams);
     searchParams.filters['contentType'] = _.get(bothParams, 'queryParams.contentType') || this.getContentType();
     this.search(searchParams).subscribe(
       (data: ServerResponse) => {
@@ -253,11 +256,11 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
    * This method helps to navigate to different pages.
    * If page number is less than 1 or page number is greater than total number
    * of pages is less which is not possible, then it returns.
-	 *
-	 * @param {number} page Variable to know which page has been clicked
-	 *
-	 * @example navigateToPage(1)
-	 */
+     *
+     * @param {number} page Variable to know which page has been clicked
+     *
+     * @example navigateToPage(1)
+     */
   navigateToPage(page: number): undefined | void {
     if (page < 1 || page > this.pager.totalPages) {
       return;

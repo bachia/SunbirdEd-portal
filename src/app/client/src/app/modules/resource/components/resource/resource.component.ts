@@ -94,7 +94,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
       }
       return value.length;
     });
+
+    console.log("Check if channel is there: "+this.userService.hashTagId);
     const softConstraintData = {
+        //Sriram -- check this channel value
       filters: {channel: this.userService.hashTagId,
       board: [this.dataDrivenFilters.board]},
       softConstraints: _.get(this.activatedRoute.snapshot, 'data.softConstraints'),
@@ -161,6 +164,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   }
   public viewAll(event) {
     const searchQuery = JSON.parse(event.searchQuery);
+    //Sriram -- check this channel value
     const softConstraintsFilter = {
       board : [this.dataDrivenFilters.board],
       channel: this.hashTagId,

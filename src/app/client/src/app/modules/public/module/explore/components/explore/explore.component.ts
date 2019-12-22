@@ -46,6 +46,8 @@ export class ExploreComponent implements OnInit, OnDestroy {
     this.orgDetailsService.getOrgDetails(this.activatedRoute.snapshot.params.slug).pipe(
       mergeMap((orgDetails: any) => {
         this.hashTagId = orgDetails.hashTagId;
+        //Sriram -- checkng whether channel 100 appear here.
+        console.log("Check if channel is there: "+this.hashTagId);
         this.initFilters = true;
         return this.dataDrivenFilterEvent;
       }), first()
@@ -153,6 +155,7 @@ export class ExploreComponent implements OnInit, OnDestroy {
   }
   public viewAll(event) {
     const searchQuery = JSON.parse(event.searchQuery);
+    //Sriram -- check this channel value
     const softConstraintsFilter = {
       board : [this.dataDrivenFilters.board],
       channel: this.hashTagId,
