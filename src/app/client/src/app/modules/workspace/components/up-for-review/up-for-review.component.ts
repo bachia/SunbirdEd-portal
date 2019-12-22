@@ -204,6 +204,8 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
       this.sort = { lastUpdatedOn: this.config.appConfig.WORKSPACE.lastUpdatedOn };
     }
     const rolesMap = this.userService.RoleOrgMap;
+    console.log("ROLESMAP:::::");
+    console.log(rolesMap);
     const searchParams = {
       filters: {
         status: ['Review'],
