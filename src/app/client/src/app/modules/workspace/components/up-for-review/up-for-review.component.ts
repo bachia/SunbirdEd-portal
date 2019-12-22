@@ -203,16 +203,21 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     } else {
       this.sort = { lastUpdatedOn: this.config.appConfig.WORKSPACE.lastUpdatedOn };
     }
+    //Sriram -- have updated rolesMap excluding PUBLIC
     const rolesMap = this.userService.RoleOrgMap;
     console.log("ROLESMAP:::::");
     console.log(rolesMap);
+    delete rolesMap['PUBLIC'];
+    var createdForSet = this.userService.RoleOrgMap && _.compact(
+                _.union(rolesMap['CONTENT_REVIEWER'],
+                        rolesMap['BOOK_REVIEWER'],
+                        rolesMap['CONTENT_REVIEW']));
+    console.log("CREATED FOR SET, after removing PUBLIC");
     const searchParams = {
       filters: {
         status: ['Review'],
         //Sriram -- to check this for discussion
-        createdFor: this.userService.RoleOrgMap && _.compact(_.union(rolesMap['CONTENT_REVIEWER'],
-          rolesMap['BOOK_REVIEWER'],
-          rolesMap['CONTENT_REVIEW'])),
+        createdFor: createdForSet,
         createdBy: { '!=': this.userService.userid },
         objectType: this.config.appConfig.WORKSPACE.objectType,
         board: bothParams.queryParams.board,
