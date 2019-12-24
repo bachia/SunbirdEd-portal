@@ -204,7 +204,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
       this.sort = { lastUpdatedOn: this.config.appConfig.WORKSPACE.lastUpdatedOn };
     }
     //Sriram -- have updated rolesMap excluding PUBLIC
-    console.log("USERID:: "+this.userService.userid);
+    //console.log("USERID:: "+this.userService.userid);
     const rolesMap = this.userService.RoleOrgMap;
     var createdForSet = this.userService.RoleOrgMap && _.compact(
                     _.union(rolesMap['CONTENT_REVIEWER'],
@@ -243,7 +243,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
         console.log(createdForSet);
     });*/
 
-    console.log("after if::");
+    //console.log("after if::");
     console.log(createdForSet);
     const searchParams = {
       filters: {
