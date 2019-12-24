@@ -206,7 +206,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     //Sriram -- have updated rolesMap excluding PUBLIC
     const rolesMap = this.userService.RoleOrgMap;
     const uProf = this.userService.getUserProfile();
-    consolelog("USER PROFILE:::::");
+    console.log("USER PROFILE:::::");
     console.log(uProf);
     console.log("ROLESMAP:::::");
     console.log(rolesMap);
