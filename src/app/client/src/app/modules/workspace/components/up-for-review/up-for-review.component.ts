@@ -213,7 +213,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     var createdForSet = [];
     var orgs_count = uProf.result.response.organisations.length;
     for(var org_index = 0; org_index < orgs_count; org_index++) {
-        if(indexOf(uProf.result.response.organisations[org_index].roles, "CONTENT_REVIEWER") != -1) {
+        if(uProf.result.response.organisations[org_index].roles.indexOf("CONTENT_REVIEWER") != -1) {
             createdForSet.push(uProf.result.response.organisations[org_index].organisationId);
         }
     }
