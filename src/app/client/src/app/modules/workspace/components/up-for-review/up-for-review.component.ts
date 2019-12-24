@@ -210,13 +210,25 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     console.log(uProf);
     console.log("ROLESMAP:::::");
     console.log(rolesMap);
-    var createdForSet = this.userService.RoleOrgMap && _.compact(
-                _.union(rolesMap['CONTENT_REVIEWER'],
-                        rolesMap['BOOK_REVIEWER'],
-                        rolesMap['CONTENT_REVIEW'],
-                        rolesMap['PUBLIC']
-                  ));
-    console.log("CREATED FOR SET, after removing PUBLIC");
+    var createdForSet = [];
+    var orgs_count = uProf.result.response.organisations.length;
+    for(var org_index = 0; org_index < orgs_count; org_index++) {
+        if(indexof(uProf.result.response.organisations[org_index].roles, "CONTENT_REVIEWER") != -1) {
+            createdForPush.push(uProf.result.response.organisations[org_index].organisationId);
+        }
+    }
+    console.log("Picked createdForSet::");
+    console.log(createdForSet);
+    if(createdForSet.length == 0) {
+        createdForSet = this.userService.RoleOrgMap && _.compact(
+                    _.union(rolesMap['CONTENT_REVIEWER'],
+                            rolesMap['BOOK_REVIEWER'],
+                            rolesMap['CONTENT_REVIEW'],
+                            rolesMap['PUBLIC']
+                      ));
+    }
+    console.log("after if::");
+    console.log(createdForSet);
     const searchParams = {
       filters: {
         status: ['Review'],

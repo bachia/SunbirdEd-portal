@@ -44,6 +44,9 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
                 }
             }
             console.log("CONTENT ORGS INSIDE: " + this.metadata.content_orgs);
+        } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+                this.metadata.content_orgs = upData.result.response.organisations[0].orgName;
+                console.log("USER HAVING ONLY ONE ORG: " + this.metadata.content_orgs);
         }
 
         if(this.metadata.content_orgs == "") {
