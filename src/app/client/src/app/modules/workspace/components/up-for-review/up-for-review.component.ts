@@ -204,6 +204,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
       this.sort = { lastUpdatedOn: this.config.appConfig.WORKSPACE.lastUpdatedOn };
     }
     //Sriram -- have updated rolesMap excluding PUBLIC
+    console.log("USERID:: "+this.userService.userid);
     const rolesMap = this.userService.RoleOrgMap;
     const uProf = this.userService.getUserProfileById(this.userService.userid);
     console.log("USER PROFILE:::::");
