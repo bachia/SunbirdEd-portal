@@ -207,27 +207,43 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     console.log("USERID:: "+this.userService.userid);
     const rolesMap = this.userService.RoleOrgMap;
     const uProf = this.userService.getUserProfileById(this.userService.userid);
-    console.log("USER PROFILE:::::");
-    console.log(uProf);
-    console.log("ROLESMAP:::::");
-    console.log(rolesMap);
-    var createdForSet = [];
-    var orgs_count = uProf.result.response.organisations.length;
-    for(var org_index = 0; org_index < orgs_count; org_index++) {
-        if(uProf.result.response.organisations[org_index].roles.indexOf("CONTENT_REVIEWER") != -1) {
-            createdForSet.push(uProf.result.response.organisations[org_index].organisationId);
-        }
-    }
-    console.log("Picked createdForSet::");
-    console.log(createdForSet);
-    if(createdForSet.length == 0) {
-        createdForSet = this.userService.RoleOrgMap && _.compact(
+    /*var createdForSet = this.userService.RoleOrgMap && _.compact(
                     _.union(rolesMap['CONTENT_REVIEWER'],
                             rolesMap['BOOK_REVIEWER'],
                             rolesMap['CONTENT_REVIEW'],
                             rolesMap['PUBLIC']
-                      ));
-    }
+                      )); */
+    var createdForSet = [];
+    this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
+      (uProf: any) => {
+        var orgs_count = upData.result.response.organisations.length;
+        console.log("USER PROFILE:::::");
+        console.log(uProf);
+        console.log("ROLESMAP:::::");
+        console.log(rolesMap);
+
+        if(uProf.result && uProf.result.response && uProf.result.response.organisations) {
+            createdForSet = [];
+            var orgs_count = uProf.result.response.organisations.length;
+            for(var org_index = 0; org_index < orgs_count; org_index++) {
+                if(uProf.result.response.organisations[org_index].roles.indexOf("CONTENT_REVIEWER") != -1) {
+                    createdForSet.push(uProf.result.response.organisations[org_index].organisationId);
+                }
+            }
+            if(createdForSet.length == 0) {
+                createdForSet = this.userService.RoleOrgMap && _.compact(
+                            _.union(rolesMap['CONTENT_REVIEWER'],
+                                    rolesMap['BOOK_REVIEWER'],
+                                    rolesMap['CONTENT_REVIEW'],
+                                    rolesMap['PUBLIC']
+                              ));
+            }
+        }
+
+        console.log("Picked createdForSet::");
+        console.log(createdForSet);
+    });
+
     console.log("after if::");
     console.log(createdForSet);
     const searchParams = {
