@@ -205,13 +205,17 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     }
     //Sriram -- have updated rolesMap excluding PUBLIC
     const rolesMap = this.userService.RoleOrgMap;
+    const uProf = this.userService.getUserProfile();
+    consolelog("USER PROFILE:::::");
+    console.log(uProf);
     console.log("ROLESMAP:::::");
     console.log(rolesMap);
-    delete rolesMap['PUBLIC'];
     var createdForSet = this.userService.RoleOrgMap && _.compact(
                 _.union(rolesMap['CONTENT_REVIEWER'],
                         rolesMap['BOOK_REVIEWER'],
-                        rolesMap['CONTENT_REVIEW']));
+                        rolesMap['CONTENT_REVIEW'],
+                        rolesMap['PUBLIC']
+                  ));
     console.log("CREATED FOR SET, after removing PUBLIC");
     const searchParams = {
       filters: {

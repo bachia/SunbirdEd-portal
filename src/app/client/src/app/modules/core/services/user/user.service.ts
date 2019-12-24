@@ -165,7 +165,7 @@ export class UserService {
   /**
    * method to fetch user profile from server.
    */
-  public getUserProfile(userid=null): void {
+  public getUserProfile(): void {
     const option = {
       url: this.config.urlConFig.URLS.USER.GET_PROFILE + this.userid,
       param: this.config.urlConFig.params.userReadParam
