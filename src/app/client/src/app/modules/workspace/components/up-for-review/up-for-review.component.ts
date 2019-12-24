@@ -215,7 +215,6 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     var createdForSet = [];
     this.userService.getUserProfileById(this.userService.userid).subscribe(
       (uProf: any) => {
-        var orgs_count = upData.result.response.organisations.length;
         console.log("USER PROFILE:::::");
         console.log(uProf);
         console.log("ROLESMAP:::::");
