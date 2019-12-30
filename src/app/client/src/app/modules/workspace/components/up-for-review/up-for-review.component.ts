@@ -209,8 +209,8 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     var createdForSet = this.userService.RoleOrgMap && _.compact(
                     _.union(rolesMap['CONTENT_REVIEWER'],
                             rolesMap['BOOK_REVIEWER'],
-                            rolesMap['CONTENT_REVIEW'],
-                            rolesMap['PUBLIC']
+                            rolesMap['CONTENT_REVIEW']
+                            //rolesMap['PUBLIC']
                       ));
                       /** commented out for solution finding -- Sriram
     var createdForSet = [];

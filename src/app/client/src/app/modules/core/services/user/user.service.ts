@@ -234,7 +234,7 @@ export class UserService {
     }
     if (profileData.rootOrgId) {
       // SL Ticket 971 - Don't push Root OrgId to orgrole map
-     //  organisationIds.push(profileData.rootOrgId);
+      organisationIds.push(profileData.rootOrgId);
       // SL Ticket 971
     }
     this._dims = _.concat(organisationIds, this.channel);
