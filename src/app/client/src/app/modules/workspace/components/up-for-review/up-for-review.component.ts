@@ -206,13 +206,11 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     //Sriram -- have updated rolesMap excluding PUBLIC
     //console.log("USERID:: "+this.userService.userid);
     const rolesMap = this.userService.RoleOrgMap;
-    var createdForSet = this.userService.RoleOrgMap && _.compact(
+    /*var createdForSet = this.userService.RoleOrgMap && _.compact(
                     _.union(rolesMap['CONTENT_REVIEWER'],
                             rolesMap['BOOK_REVIEWER'],
                             rolesMap['CONTENT_REVIEW']
-                            //rolesMap['PUBLIC']
-                      ));
-                      /** commented out for solution finding -- Sriram
+                      ));*/
     var createdForSet = [];
     this.userService.getUserProfileById(this.userService.userid).subscribe(
       (uProf: any) => {
@@ -233,15 +231,14 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
                 createdForSet = this.userService.RoleOrgMap && _.compact(
                             _.union(rolesMap['CONTENT_REVIEWER'],
                                     rolesMap['BOOK_REVIEWER'],
-                                    rolesMap['CONTENT_REVIEW'],
-                                    rolesMap['PUBLIC']
+                                    rolesMap['CONTENT_REVIEW']
                               ));
             }
         }
 
         console.log("Picked createdForSet::");
         console.log(createdForSet);
-    });*/
+    });
 
     //console.log("after if::");
     console.log(createdForSet);
