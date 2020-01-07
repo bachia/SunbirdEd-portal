@@ -203,14 +203,7 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     } else {
       this.sort = { lastUpdatedOn: this.config.appConfig.WORKSPACE.lastUpdatedOn };
     }
-    //Sriram -- have updated rolesMap excluding PUBLIC
-    //console.log("USERID:: "+this.userService.userid);
     const rolesMap = this.userService.RoleOrgMap;
-    /*var createdForSet = this.userService.RoleOrgMap && _.compact(
-                    _.union(rolesMap['CONTENT_REVIEWER'],
-                            rolesMap['BOOK_REVIEWER'],
-                            rolesMap['CONTENT_REVIEW']
-                      ));*/
     var createdForSet = [];
     this.userService.getUserProfileById(this.userService.userid).subscribe(
       (uProf: any) => {
@@ -235,58 +228,54 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
                               ));
             }
         }
-
         console.log("Picked createdForSet::");
         console.log(createdForSet);
+        const searchParams = {
+          filters: {
+            status: ['Review'],
+            //Sriram -- to check this for discussion
+            createdFor: createdForSet,
+            createdBy: { '!=': this.userService.userid },
+            objectType: this.config.appConfig.WORKSPACE.objectType,
+            board: bothParams.queryParams.board,
+            subject: bothParams.queryParams.subject,
+            medium: bothParams.queryParams.medium,
+            gradeLevel: bothParams.queryParams.gradeLevel,
+          },
+          limit: limit,
+          offset: (pageNumber - 1) * (limit),
+          query: _.toString(bothParams.queryParams.query),
+          sort_by: this.sort
+        };
+        console.log("UPFORREVIEW FILTERS:");
+        console.log(searchParams);
+        searchParams.filters['contentType'] = _.get(bothParams, 'queryParams.contentType') || this.getContentType();
+        this.search(searchParams).subscribe(
+          (data: ServerResponse) => {
+            if (data.result.count && data.result.content.length > 0) {
+              this.upForReviewContentData = data.result.content;
+              this.totalCount = data.result.count;
+              this.pager = this.paginationService.getPager(data.result.count, pageNumber, limit);
+              this.showLoader = false;
+              this.noResult = false;
+            } else {
+              this.showError = false;
+              this.noResult = true;
+              this.showLoader = false;
+              this.noResultMessage = {
+                'message': 'messages.stmsg.m0008',
+                'messageText': 'messages.stmsg.m0035'
+              };
+            }
+          },
+          (err: ServerResponse) => {
+            this.showLoader = false;
+            this.noResult = false;
+            this.showError = true;
+            this.toasterService.error(this.resourceService.messages.fmsg.m0021);
+          }
+        );
     });
-
-    //console.log("after if::");
-    console.log(createdForSet);
-    const searchParams = {
-      filters: {
-        status: ['Review'],
-        //Sriram -- to check this for discussion
-        createdFor: createdForSet,
-        createdBy: { '!=': this.userService.userid },
-        objectType: this.config.appConfig.WORKSPACE.objectType,
-        board: bothParams.queryParams.board,
-        subject: bothParams.queryParams.subject,
-        medium: bothParams.queryParams.medium,
-        gradeLevel: bothParams.queryParams.gradeLevel,
-      },
-      limit: limit,
-      offset: (pageNumber - 1) * (limit),
-      query: _.toString(bothParams.queryParams.query),
-      sort_by: this.sort
-    };
-    console.log("UPFORREVIEW FILTERS:");
-    console.log(searchParams);
-    searchParams.filters['contentType'] = _.get(bothParams, 'queryParams.contentType') || this.getContentType();
-    this.search(searchParams).subscribe(
-      (data: ServerResponse) => {
-        if (data.result.count && data.result.content.length > 0) {
-          this.upForReviewContentData = data.result.content;
-          this.totalCount = data.result.count;
-          this.pager = this.paginationService.getPager(data.result.count, pageNumber, limit);
-          this.showLoader = false;
-          this.noResult = false;
-        } else {
-          this.showError = false;
-          this.noResult = true;
-          this.showLoader = false;
-          this.noResultMessage = {
-            'message': 'messages.stmsg.m0008',
-            'messageText': 'messages.stmsg.m0035'
-          };
-        }
-      },
-      (err: ServerResponse) => {
-        this.showLoader = false;
-        this.noResult = false;
-        this.showError = true;
-        this.toasterService.error(this.resourceService.messages.fmsg.m0021);
-      }
-    );
   }
   /**
    * This method helps to navigate to different pages.
