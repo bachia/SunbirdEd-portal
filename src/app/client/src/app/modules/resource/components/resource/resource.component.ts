@@ -135,13 +135,47 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
+      console.log("============= STRT OF prepareCarouselData element contents data =================");
+      console.log("=================================================================================");
+      console.log(element.contents);
+      console.log("=================================================================================");
+      console.log("============= END OF  prepareCarouselData element contents data =================");
       if (element.contents && element.contents.length) {
-        collector.push(element);
+
+        _.forEach(element.contents, (content, index) => {
+            console.log(content);
+            //element.contents[index].xyz = this.getOrgString(content.creatorId);
+            collector.push(element);
+        });
       }
       return collector;
     }, []);
     return carouselData;
   }
+
+  private getOrgString(id) {
+      var content_orgs = "";
+      this.userService.getUserProfileById(id).subscribe(
+          (upData: any) => {
+            content_orgs = "";
+            var orgs_count = upData.result.response.organisations.length;
+            if(orgs_count > 1) {
+                for(var org_index = 0; org_index < orgs_count; org_index++) {
+                    if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+                      if(content_orgs != "") {
+                        content_orgs += ", ";
+                      }
+                      content_orgs += upData.result.response.organisations[org_index].orgName;
+                    }
+                }
+            } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+              content_orgs = upData.result.response.organisations[0].orgName;
+            }
+            return content_orgs;
+        });
+        return content_orgs;
+  }
+
   public prepareVisits(event) {
     _.forEach(event, (inView, index) => {
       if (inView.metaData.identifier) {

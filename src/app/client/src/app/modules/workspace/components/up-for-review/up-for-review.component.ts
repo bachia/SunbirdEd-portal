@@ -205,13 +205,9 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
     }
     const rolesMap = this.userService.RoleOrgMap;
     var createdForSet = [];
+    //TODO:: Sriram:: Move to common library
     this.userService.getUserProfileById(this.userService.userid).subscribe(
       (uProf: any) => {
-        console.log("USER PROFILE:::::");
-        console.log(uProf);
-        console.log("ROLESMAP:::::");
-        console.log(rolesMap);
-
         if(uProf.result && uProf.result.response && uProf.result.response.organisations) {
             createdForSet = [];
             var orgs_count = uProf.result.response.organisations.length;
@@ -228,12 +224,9 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
                               ));
             }
         }
-        console.log("Picked createdForSet::");
-        console.log(createdForSet);
         const searchParams = {
           filters: {
             status: ['Review'],
-            //Sriram -- to check this for discussion
             createdFor: createdForSet,
             createdBy: { '!=': this.userService.userid },
             objectType: this.config.appConfig.WORKSPACE.objectType,
@@ -247,8 +240,6 @@ export class UpForReviewComponent extends WorkSpace implements OnInit {
           query: _.toString(bothParams.queryParams.query),
           sort_by: this.sort
         };
-        console.log("UPFORREVIEW FILTERS:");
-        console.log(searchParams);
         searchParams.filters['contentType'] = _.get(bothParams, 'queryParams.contentType') || this.getContentType();
         this.search(searchParams).subscribe(
           (data: ServerResponse) => {

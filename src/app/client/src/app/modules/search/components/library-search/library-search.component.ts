@@ -92,8 +92,8 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
         let filters = _.pickBy(this.queryParams, (value: Array<string> | string) => value && value.length);
         filters = _.omit(filters, ['key', 'sort_by', 'sortType', 'appliedFilters']);
         const softConstraintData = {
-	filters: {channel: this.userService.hashTagId,
-	    board: [this.dataDrivenFilters.board]},
+    filters: {channel: this.userService.hashTagId,
+        board: [this.dataDrivenFilters.board]},
             softConstraints: _.get(this.activatedRoute.snapshot, 'data.softConstraints'),
             mode: 'soft'
           };
@@ -109,10 +109,10 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
             mode: _.get(manipulatedData, 'mode'),
             facets: this.facets,
             params: this.configService.appConfig.Library.contentApiQueryParams
-	    };
-	    // SL Changes - Modify filters to - Ticket 721    
-        option.filters.contentType = filters.contentType ||	['Collection', 'Resource'];
-	// SL Ticket 721
+        };
+        // SL Changes - Modify filters to - Ticket 721
+        option.filters.contentType = filters.contentType || ['Collection', 'Resource'];
+        // SL Ticket 721
         if (_.get(manipulatedData, 'filters')) {
             option['softConstraints'] = _.get(manipulatedData, 'softConstraints');
           }
