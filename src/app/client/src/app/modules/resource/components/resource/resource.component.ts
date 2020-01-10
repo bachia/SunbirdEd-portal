@@ -137,7 +137,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
         _.forEach(element.contents, (content, index) => {
-            //console.log(content);
+            console.log(content);
             //element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
             collector.push(element);
         });

@@ -50,9 +50,6 @@ export class PlayerService {
         if (option.courseId && option.batchHashTagId) {
           contentDetails.batchHashTagId = option.batchHashTagId;
         }
-        console.log("Player Service Get Content");
-        console.log(contentDetails);
-        console.log("==================");
         return observableOf(this.getConfig(contentDetails));
       }));
   }
