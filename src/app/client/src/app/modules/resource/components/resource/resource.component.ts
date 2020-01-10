@@ -135,12 +135,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
-
       if (element.contents && element.contents.length) {
-
         _.forEach(element.contents, (content, index) => {
-            console.log(content);
-            element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
+            //console.log(content);
+            //element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
             collector.push(element);
         });
       }
