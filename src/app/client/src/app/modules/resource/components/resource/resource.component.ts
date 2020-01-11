@@ -136,7 +136,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
       let contentsOrgName = [];
       _.forEach(contents, (content, index) => {
-          console.log(content);
+          console.log(contents[index]);
+          if(contents[index] && contents[index].createdBy) {
+              console.log("found:: "+contents[index].createdBy);
+              let orgname = this.getOrgString(contents[index].createdBy);
+              console.log("org name: " + orgname);
+          }
           //console.log("created by: " + content.createdBy);
           //let orgname = this.getOrgString(content.createdBy);
           //console.log("org name: " + orgname);
@@ -151,7 +156,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
         _.forEach(element.contents, (content, index) => {
-            console.log(content);
+            //console.log(content);
             //element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
             collector.push(element);
         });
