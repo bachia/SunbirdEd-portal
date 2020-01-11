@@ -137,9 +137,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
       let contentsOrgName = [];
       _.forEach(contents, (content, index) => {
           console.log(contents[index]);
-          if(contents[index] && contents[index].createdBy) {
-              console.log("found:: "+contents[index].createdBy);
-              let orgname = this.getOrgString(contents[index].createdBy);
+          if(contents[index] && contents[index]['createdBy']) {
+              console.log("found:: "+contents[index]['createdBy']);
+              let orgname = this.getOrgString(contents[index]['createdBy']);
               console.log("org name: " + orgname);
           }
           //console.log("created by: " + content.createdBy);
