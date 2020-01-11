@@ -134,10 +134,19 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
-      console.log(contents);
+      let contentsOrgName = [];
+      _.forEach(contents, (content, index) => {
+          if(content.createdBy) {
+              contentsOrgName[content.identifier] = await this.getOrgString(content.createdBy);
+          } else {
+              contentsOrgName[content.identifier] = "-";
+          }
+      });
+      console.log(contentsOrgName);
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
         _.forEach(element.contents, (content, index) => {
+            console.log(content);
             //element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
             collector.push(element);
         });
@@ -147,9 +156,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     return carouselData;
   }
 
-  private getOrgString(id) {
+  private async getOrgString(id) {
       var content_orgs = "";
-      this.userService.getUserProfileById(id).subscribe(
+      await this.userService.getUserProfileById(id).subscribe(
           (upData: any) => {
             content_orgs = "";
             var orgs_count = upData.result.response.organisations.length;

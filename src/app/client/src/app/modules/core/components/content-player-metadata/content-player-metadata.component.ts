@@ -28,37 +28,31 @@ export class ContentPlayerMetadataComponent implements OnInit, OnDestroy {
     this.metadata = { ...this.contentData };
     this.metadata.content_orgs = "";
     //TODO:: Sriram:: Move to common library
-    this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
-      (upData: any) => {
-        var orgs_count = upData.result.response.organisations.length;
-        //console.log("ORGs Count:: "+orgs_count);
-        if(orgs_count > 1) {
-            this.metadata.content_orgs = "";
-            for(var org_index = 0; org_index < orgs_count; org_index++) {
-                //console.log("rootorgId: " + upData.result.response.rootOrgId + " vs current org id: " + upData.result.response.organisations[org_index].organisationId);
-                if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
-                  if(this.metadata.content_orgs != "") {
-                    this.metadata.content_orgs += ", ";
-                  }
-                  this.metadata.content_orgs += upData.result.response.organisations[org_index].orgName;
-                  //console.log("adding ORG: " + upData.result.response.organisations[org_index].orgName);
+    if(this.metadata.createdBy) {
+        this.userService.getUserProfileById(this.metadata.createdBy).subscribe(
+          (upData: any) => {
+            var orgs_count = upData.result.response.organisations.length;
+            if(orgs_count > 1) {
+                this.metadata.content_orgs = "";
+                for(var org_index = 0; org_index < orgs_count; org_index++) {
+                    if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+                      if(this.metadata.content_orgs != "") {
+                        this.metadata.content_orgs += ", ";
+                      }
+                      this.metadata.content_orgs += upData.result.response.organisations[org_index].orgName;
+                    }
                 }
+            } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+                    this.metadata.content_orgs = upData.result.response.organisations[0].orgName;
             }
-            //console.log("CONTENT ORGS INSIDE: " + this.metadata.content_orgs);
-        } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
-                this.metadata.content_orgs = upData.result.response.organisations[0].orgName;
-                //console.log("USER HAVING ONLY ONE ORG: " + this.metadata.content_orgs);
-        }
 
-        if(this.metadata.content_orgs == "") {
-          this.metadata.content_orgs = upData.result.response.rootOrgName;
-          //console.log("CONTENT ORGS FIRST OUT: " + this.metadata.content_orgs);
-        }
-
-    });
+            if(this.metadata.content_orgs == "") {
+              this.metadata.content_orgs = upData.result.response.rootOrgName;
+            }
+        });
+    }
     if(this.metadata.content_orgs == "" && this.metadata.orgDetails) {
       this.metadata.content_orgs = this.metadata.orgDetails.orgName;
-      //console.log("CONTENT ORGS OUTSIDE: " + this.metadata.content_orgs);
     }
     this.validateContent();
     this.getConceptsNames();
