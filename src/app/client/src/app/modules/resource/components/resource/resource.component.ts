@@ -136,13 +136,14 @@ export class ResourceComponent implements OnInit, OnDestroy {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
       let contentsOrgName = [];
       _.forEach(contents, (content, index) => {
-          if(content.createdBy) {
+          console.log(content);
+          /*if(content.createdBy) {
               contentsOrgName[content.identifier] = await this.getOrgString(content.createdBy);
           } else {
               contentsOrgName[content.identifier] = "-";
-          }
+          }*/
       });
-      console.log(contentsOrgName);
+      //console.log(contentsOrgName);
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
         _.forEach(element.contents, (content, index) => {
