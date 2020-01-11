@@ -139,24 +139,17 @@ export class ResourceComponent implements OnInit, OnDestroy {
           console.log(contents[index]);
           if(contents[index] && contents[index]['createdBy']) {
               console.log("found:: "+contents[index]['createdBy']);
-              let orgname = this.getOrgString(contents[index]['createdBy']);
-              console.log("org name: " + orgname);
-          }
-          //console.log("created by: " + content.createdBy);
-          //let orgname = this.getOrgString(content.createdBy);
-          //console.log("org name: " + orgname);
-          //console.log("id: " + content.identifier);
-          /*if(content.createdBy) {
-              contentsOrgName[content.identifier] = await this.getOrgString(content.createdBy);
+              contentsOrgName[contents[index]['identifier']] = this.getOrgString(contents[index]['createdBy']);
           } else {
-              contentsOrgName[content.identifier] = "-";
-          }*/
+              contentsOrgName[contents[index]['identifier']] = "-";
+          }
       });
-      //console.log(contentsOrgName);
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
+          console.log(contentsOrgName);
         _.forEach(element.contents, (content, index) => {
-            //console.log(content);
+            console.log(content);
+            //let orgName = contentsOrgName;
             //element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
             collector.push(element);
         });
