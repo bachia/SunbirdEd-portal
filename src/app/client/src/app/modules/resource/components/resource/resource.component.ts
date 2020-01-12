@@ -139,18 +139,22 @@ export class ResourceComponent implements OnInit, OnDestroy {
           console.log(contents[index]);
           if(contents[index] && contents[index]['createdBy']) {
               console.log("found:: "+contents[index]['createdBy']);
-              contentsOrgName[contents[index]['identifier']] = this.getOrgString(contents[index]['createdBy']);
+              let oname = this.getOrgString(contents[index]['createdBy']);
+              console.log("orgname:: "+oname);
+              contentsOrgName[contents[index]['identifier']] = oname;
           } else {
               contentsOrgName[contents[index]['identifier']] = "-";
           }
       });
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
+          console.log("contents orgname");
           console.log(contentsOrgName);
         _.forEach(element.contents, (content, index) => {
-            console.log(content);
-            //let orgName = contentsOrgName;
-            //element.contents[index].orgDetails.orgName = this.getOrgString(content.creatorId);
+            //resume from here
+            if(contentsOrgName[content.metadata.identifier] != "-" ) {
+                element.contents[index].orgDetails.orgName = contentsOrgName[content.metadata.identifier];
+            }
             collector.push(element);
         });
       }
@@ -159,9 +163,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     return carouselData;
   }
 
-  private async getOrgString(id) {
+  private getOrgString(id) {
       var content_orgs = "";
-      await this.userService.getUserProfileById(id).subscribe(
+      this.userService.getUserProfileById(id).subscribe(
           (upData: any) => {
             content_orgs = "";
             var orgs_count = upData.result.response.organisations.length;

@@ -145,20 +145,6 @@ export class UserService {
       url: this.config.urlConFig.URLS.USER.GET_PROFILE + userid,
       param: this.config.urlConFig.params.userReadParam
     };
-
-    /*this.learnerService.get(option).subscribe(
-      (data: ServerResponse) => {
-        console.log("getUserProfileById, response succeeded");
-        console.log(data);
-        console.log("===========end of log==================");
-      },
-      (err: ServerResponse) => {
-          console.log("getUserProfileById, response failed");
-          console.log(err);
-          console.log("===========end of log==================");
-        this._userData$.next({ err: err, userProfile: this._userProfile });
-      }
-    );*/
     return this.learnerService.get(option).pipe(map(res => { return res; }));
   }
 
