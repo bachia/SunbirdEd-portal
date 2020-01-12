@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { PublicDataService } from './../public-data/public-data.service';
 import { skipWhile } from 'rxjs/operators';
 import * as UAParser from 'ua-parser-js';
+import 'rxjs/add/operator/toPromise';
 
 /**
  * Service to fetch user details from server
@@ -140,12 +141,13 @@ export class UserService {
     return this._sessionId;
   }
 
-  public getUserProfileById(userid): any {
+  public async getUserProfileById(userid): any {
     const option = {
       url: this.config.urlConFig.URLS.USER.GET_PROFILE + userid,
       param: this.config.urlConFig.params.userReadParam
     };
-    return this.learnerService.get(option).pipe(map(res => { return res; }));
+    //return await this.learnerService.get(option).pipe(map(res => { return res; }));
+    return await this.learnerService.get(option).toPromise();
   }
 
   /**
