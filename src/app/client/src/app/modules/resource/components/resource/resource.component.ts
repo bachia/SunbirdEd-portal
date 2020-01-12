@@ -166,6 +166,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
   private getOrgString(id) {
       var content_orgs = "";
       var upData = this.userService.getUserProfileById(id);
+      console.log(upData);
       content_orgs = "";
       var orgs_count = upData.result.response.organisations.length;
       if(orgs_count > 1) {
