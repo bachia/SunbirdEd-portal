@@ -149,7 +149,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
           console.log("contents creators");
           console.log(contentCreators);
           _.forEach(element.contents, (content, index) => {
-            //resume from here
+            //Sriram - Extended Fix for organization. TODO: cleanup required.
             console.log(content);
             if(contentCreators[content.metaData.identifier] != "-" ) {
               this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
