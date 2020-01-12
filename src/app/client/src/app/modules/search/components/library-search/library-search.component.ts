@@ -128,8 +128,13 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
                 this.paginationDetails = this.paginationService.getPager(data.result.count, this.paginationDetails.currentPage,
                     this.configService.appConfig.SEARCH.PAGE_LIMIT);
                 const { constantData, metaData, dynamicFields } = this.configService.appConfig.LibrarySearch;
+                console.log("================result content===================");
+                console.log(data.result.content);
+                console.log("=================================================");
                 this.contentList = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
+                console.log("=================================================");
                 console.log(this.contentList);
+                console.log("=================================================");
             }, err => {
                 this.showLoader = false;
                 this.contentList = [];
