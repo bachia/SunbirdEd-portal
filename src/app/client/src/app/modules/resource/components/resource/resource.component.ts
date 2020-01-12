@@ -165,25 +165,22 @@ export class ResourceComponent implements OnInit, OnDestroy {
 
   private getOrgString(id) {
       var content_orgs = "";
-      this.userService.getUserProfileById(id).subscribe(
-          (upData: any) => {
-            content_orgs = "";
-            var orgs_count = upData.result.response.organisations.length;
-            if(orgs_count > 1) {
-                for(var org_index = 0; org_index < orgs_count; org_index++) {
-                    if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
-                      if(content_orgs != "") {
-                        content_orgs += ", ";
-                      }
-                      content_orgs += upData.result.response.organisations[org_index].orgName;
-                    }
-                }
-            } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
-              content_orgs = upData.result.response.organisations[0].orgName;
+      var updata = this.userService.getUserProfileById(id);
+      content_orgs = "";
+      var orgs_count = upData.result.response.organisations.length;
+      if(orgs_count > 1) {
+        for(var org_index = 0; org_index < orgs_count; org_index++) {
+          if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+            if(content_orgs != "") {
+              content_orgs += ", ";
             }
-            return content_orgs;
-        });
-        return content_orgs;
+            content_orgs += upData.result.response.organisations[org_index].orgName;
+          }
+        }
+      } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+        content_orgs = upData.result.response.organisations[0].orgName;
+      }
+      return content_orgs;
   }
 
   public prepareVisits(event) {
