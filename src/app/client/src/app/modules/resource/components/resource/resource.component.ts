@@ -136,9 +136,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
       let contentCreators = [];
       _.forEach(contents, (content, index) => {
-          console.log(contents[index]);
           if(contents[index] && contents[index]['createdBy']) {
-              console.log("found:: "+contents[index]['createdBy']);
               contentCreators[contents[index]['identifier']] = contents[index]['createdBy'];
           } else {
               contentCreators[contents[index]['identifier']] = "-";
@@ -146,14 +144,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
       });
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
-          console.log("contents creators");
-          console.log(contentCreators);
           _.forEach(element.contents, (content, index) => {
             //Sriram - Extended Fix for organization. TODO: cleanup required.
-            console.log(content);
             if(contentCreators[content.metaData.identifier] != "-" ) {
               this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
-                console.log(upData);
                 element.contents[index]["orgDetails"]["orgName"] = "";
                 var orgs_count = upData.result.response.organisations.length;
                 if(orgs_count > 1) {
@@ -171,10 +165,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
                 collector.push(element);
               });
             } else {
-                console.log("in else");
                 collector.push(element);
             }
-
         });
       }
       return collector;

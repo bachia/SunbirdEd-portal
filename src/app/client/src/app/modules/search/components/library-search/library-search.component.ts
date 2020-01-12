@@ -128,10 +128,40 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
                 this.paginationDetails = this.paginationService.getPager(data.result.count, this.paginationDetails.currentPage,
                     this.configService.appConfig.SEARCH.PAGE_LIMIT);
                 const { constantData, metaData, dynamicFields } = this.configService.appConfig.LibrarySearch;
-                console.log("================result content===================");
-                console.log(data.result.content);
-                console.log("=================================================");
+                let contentCreators = [];
+                _.forEach(data.result.content, (content, index) => {
+                  if(data.result.content[index] && data.result.content[index]['createdBy']) {
+                      contentCreators[data.result.content[index]['identifier']] = data.result.content[index]['createdBy'];
+                  } else {
+                      contentCreators[data.result.content] = "-";
+                  }
+                });
                 this.contentList = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
+                if (this.contentList && this.contentList.length) {
+                _.forEach(this.contentList, (content, index) => {
+                  //Sriram - Extended Fix for organization. TODO: cleanup required.
+                  if(contentCreators[content.metaData.identifier] != "-" ) {
+                    this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
+                      this.contentList[index]["orgDetails"]["orgName"] = "";
+                      var orgs_count = upData.result.response.organisations.length;
+                      if(orgs_count > 1) {
+                        for(var org_index = 0; org_index < orgs_count; org_index++) {
+                          if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+                            if(this.contentList[index]["orgDetails"]["orgName"] != "") {
+                              this.contentList[index]["orgDetails"]["orgName"] += ", ";
+                            }
+                            this.contentList[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
+                          }
+                        }
+                      } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+                        this.contentList[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+                      }
+                      collector.push(element);
+                    });
+                  } else {
+                    collector.push(element);
+                  }
+                });
                 console.log("=================================================");
                 console.log(this.contentList);
                 console.log("=================================================");
