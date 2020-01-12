@@ -141,13 +141,14 @@ export class UserService {
     return this._sessionId;
   }
 
-  public async getUserProfileById(userid): any {
+  public async getUserProfileById(userid) {
     const option = {
       url: this.config.urlConFig.URLS.USER.GET_PROFILE + userid,
       param: this.config.urlConFig.params.userReadParam
     };
     //return await this.learnerService.get(option).pipe(map(res => { return res; }));
-    return await this.learnerService.get(option).toPromise();
+    const resp = await this.learnerService.get(option).toPromise();
+    return resp;
   }
 
   /**
