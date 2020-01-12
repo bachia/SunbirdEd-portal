@@ -156,10 +156,7 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
                         } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
                           this.contentList[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
                         }
-                        collector.push(element);
                       });
-                    } else {
-                      collector.push(element);
                     }
                   });
                 }
