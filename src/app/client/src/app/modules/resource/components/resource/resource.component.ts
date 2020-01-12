@@ -130,7 +130,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
         this.toasterService.error(this.resourceService.messages.fmsg.m0004);
     });
   }
-  private prepareCarouselData(sections = []) {
+  private async prepareCarouselData(sections = []) {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
@@ -139,7 +139,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
           console.log(contents[index]);
           if(contents[index] && contents[index]['createdBy']) {
               console.log("found:: "+contents[index]['createdBy']);
-              let oname = this.getOrgString(contents[index]['createdBy']);
+              let oname = await this.getOrgString(contents[index]['createdBy']);
               console.log("orgname:: "+oname);
               contentsOrgName[contents[index]['identifier']] = oname;
           } else {
@@ -163,9 +163,9 @@ export class ResourceComponent implements OnInit, OnDestroy {
     return carouselData;
   }
 
-  private getOrgString(id) {
+  private async getOrgString(id) {
       var content_orgs = "";
-      var upData = this.userService.getUserProfileById(id);
+      var upData = await this.userService.getUserProfileById(id);
       console.log(upData);
       content_orgs = "";
       var orgs_count = upData.result.response.organisations.length;
