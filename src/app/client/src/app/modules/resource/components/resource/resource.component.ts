@@ -134,28 +134,47 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
-      let contentsOrgName = [];
+      let contentCreators = [];
       _.forEach(contents, (content, index) => {
           console.log(contents[index]);
           if(contents[index] && contents[index]['createdBy']) {
               console.log("found:: "+contents[index]['createdBy']);
-              let oname = this.getOrgString(contents[index]['createdBy']);
-              console.log("orgname:: "+oname);
-              contentsOrgName[contents[index]['identifier']] = oname;
+              contentCreators[contents[index]['identifier']] = contents[index]['createdBy'];
           } else {
-              contentsOrgName[contents[index]['identifier']] = "-";
+              contentCreators[contents[index]['identifier']] = "-";
           }
       });
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
-          console.log("contents orgname");
-          console.log(contentsOrgName);
-        _.forEach(element.contents, (content, index) => {
+          console.log("contents creators");
+          console.log(contentCreators);
+          _.forEach(element.contents, (content, index) => {
             //resume from here
-            if(contentsOrgName[content.metadata.identifier] != "-" ) {
-                element.contents[index].orgDetails.orgName = contentsOrgName[content.metadata.identifier];
+            console.log(content);
+            if(contentCreators[content["metadata"]["identifier"]] != "-" ) {
+              this.userService.getUserProfileById(contentCreators[content["metadata"]["identifier"]).subscribe((upData: any) => {
+                console.log(upData);
+                element.contents[index]["orgDetails"]["orgName"] = "";
+                var orgs_count = upData.result.response.organisations.length;
+                if(orgs_count > 1) {
+                  for(var org_index = 0; org_index < orgs_count; org_index++) {
+                    if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+                      if(element.contents[index]["orgDetails"]["orgName"] != "") {
+                        element.contents[index]["orgDetails"]["orgName"] += ", ";
+                      }
+                      element.contents[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
+                    }
+                  }
+                } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+                  element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+                }
+                collector.push(element);
+              });
+            } else {
+                console.log("in else");
+                collector.push(element);
             }
-            collector.push(element);
+
         });
       }
       return collector;
