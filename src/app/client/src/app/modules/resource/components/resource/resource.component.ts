@@ -151,8 +151,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
           _.forEach(element.contents, (content, index) => {
             //resume from here
             console.log(content);
-            if(contentCreators[content["metadata"]["identifier"]] != "-" ) {
-              this.userService.getUserProfileById(contentCreators[content["metadata"]["identifier"]]).subscribe((upData: any) => {
+            if(contentCreators[content.metaData.identifier] != "-" ) {
+              this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
                 console.log(upData);
                 element.contents[index]["orgDetails"]["orgName"] = "";
                 var orgs_count = upData.result.response.organisations.length;
