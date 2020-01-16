@@ -18,8 +18,8 @@ import { CacheService } from 'ng2-cache-service';
 })
 export class ViewAllComponent implements OnInit, OnDestroy {
   /**
-	 * telemetryImpression
-	*/
+     * telemetryImpression
+    */
   public telemetryImpression: IImpressionEventInput;
   public closeIntractEdata: IInteractEventEdata;
   public cardIntractEdata: IInteractEventEdata;
@@ -82,8 +82,8 @@ export class ViewAllComponent implements OnInit, OnDestroy {
    */
   pageNumber: number;
   /**
-	 * Contains page limit of outbox list
-	 */
+     * Contains page limit of outbox list
+     */
   pageLimit: number;
   /**
    * This variable hepls to show and hide page loader.
@@ -184,6 +184,9 @@ export class ViewAllComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.unsubscribe)
     ).subscribe((response: any) => {
+        console.log("=============================VIEW ALL response before get contents=============================");
+        console.log(response);
+        console.log("===============================================================================");
         this.getContents(response);
     }, (error) => {
       this.showLoader = false;
@@ -202,6 +205,10 @@ export class ViewAllComponent implements OnInit, OnDestroy {
         this.totalCount = response.contentData.result.count;
         this.pager = this.paginationService.getPager(response.contentData.result.count, this.pageNumber, this.pageLimit);
         this.searchList = this.formatSearchresults(response);
+        console.log("=============================VIEW ALL get Contents=============================");
+        console.log(response.contentData);
+        console.log(this.searchList);
+        console.log("===============================================================================");
       } else {
         this.noResult = true;
         this.noResultMessage = {

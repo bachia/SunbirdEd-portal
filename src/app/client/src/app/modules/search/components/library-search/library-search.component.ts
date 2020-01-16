@@ -160,9 +160,6 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
                     }
                   });
                 }
-                console.log("=================================================");
-                console.log(this.contentList);
-                console.log("=================================================");
             }, err => {
                 this.showLoader = false;
                 this.contentList = [];
