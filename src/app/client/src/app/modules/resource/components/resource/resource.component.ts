@@ -161,6 +161,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
                   }
                 } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
                   element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+                } else if ((orgs_count == 1) {
+                  element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
                 }
                 collector.push(element);
               });
@@ -172,32 +174,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
       return collector;
     }, []);
     return carouselData;
-  }
-
-  private getOrgString(id) {
-      var content_orgs = "";
-      this.userService.getUserProfileById(id).subscribe(
-          (upData: any) => {
-        console.log(upData);
-        content_orgs = "";
-        var orgs_count = upData.result.response.organisations.length;
-        if(orgs_count > 1) {
-          for(var org_index = 0; org_index < orgs_count; org_index++) {
-            if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
-              if(content_orgs != "") {
-                content_orgs += ", ";
-              }
-              content_orgs += upData.result.response.organisations[org_index].orgName;
-            }
-          }
-          return content_orgs;
-        } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
-          content_orgs = upData.result.response.organisations[0].orgName;
-          return content_orgs;
-        }
-    });
-    console.log("returning from outside");
-    return content_orgs;
   }
 
   public prepareVisits(event) {
