@@ -161,7 +161,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
                   }
                 } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
                   element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
-                } else if ((orgs_count == 1) {
+                } else if (orgs_count == 1) {
                   element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
                 }
                 collector.push(element);
