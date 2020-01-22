@@ -132,17 +132,18 @@ export class ResourceComponent implements OnInit, OnDestroy {
   }
   private prepareCarouselData(sections = []) {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
-    let contentCreators = [];
-      _.forEach(contents, (content, index) => {
-        if(contents[index] && contents[index]['createdBy']) {
-          contentCreators[contents[index]['identifier']] = contents[index]['createdBy'];
-        } else {
-          contentCreators[contents[index]['identifier']] = "-";
-        }
-    });
+
     console.log(contentCreators);
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
+      let contentCreators = [];
+        _.forEach(contents, (content, index) => {
+          if(contents[index] && contents[index]['createdBy']) {
+            contentCreators[contents[index]['identifier']] = contents[index]['createdBy'];
+          } else {
+            contentCreators[contents[index]['identifier']] = "-";
+          }
+      });
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
         console.log("length is: " + element.contents.length);
