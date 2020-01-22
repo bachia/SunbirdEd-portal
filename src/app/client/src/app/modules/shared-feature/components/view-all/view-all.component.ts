@@ -306,6 +306,9 @@ export class ViewAllComponent implements OnInit, OnDestroy {
   }
 
   private formatSearchresults(response) {
+      console.log("inside format search results");
+      console.log(response);
+      console.log("end of format search results");
     _.forEach(response.contentData.result.content, (value, index) => {
       const constantData = this.configService.appConfig.ViewAll.otherCourses.constantData;
       const metaData = this.configService.appConfig.ViewAll.metaData;
