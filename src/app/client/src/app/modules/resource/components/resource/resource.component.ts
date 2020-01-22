@@ -134,6 +134,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
+      //Sriram-- comment the lines below till end of 146 if not working
       let contentCreators = [];
         _.forEach(contents, (content, index) => {
           if(contents[index] && contents[index]['createdBy']) {
@@ -143,11 +144,12 @@ export class ResourceComponent implements OnInit, OnDestroy {
           }
       });
       console.log(contentCreators);
+      //comment out till here.
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
+        //Sriram-- comment the lines below till end of 178 if not working
         console.log("length is: " + element.contents.length);
         _.forEach(element.contents, (content, index) => {
-           //Sriram - Extended Fix for organization. TODO: cleanup required.
            if(contentCreators[content.metaData.identifier] != "-" ) {
              this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
                element.contents[index]["orgDetails"]["orgName"] = "";
@@ -174,6 +176,7 @@ export class ResourceComponent implements OnInit, OnDestroy {
                collector.push(element);
            }
        });
+       //comment out till here and uncomment the code below.
        //collector.push(element);
       }
       return collector;
