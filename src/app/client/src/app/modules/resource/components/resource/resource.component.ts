@@ -132,11 +132,49 @@ export class ResourceComponent implements OnInit, OnDestroy {
   }
   private prepareCarouselData(sections = []) {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
+    let contentCreators = [];
+-      _.forEach(contents, (content, index) => {
+-          if(contents[index] && contents[index]['createdBy']) {
+-              contentCreators[contents[index]['identifier']] = contents[index]['createdBy'];
+-          } else {
+-              contentCreators[contents[index]['identifier']] = "-";
+-          }
+-   });
+    console.log(contentCreators);
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
-        collector.push(element);
+        console.log("length is: " + element.contents.length);
+        _.forEach(element.contents, (content, index) => {
+           //Sriram - Extended Fix for organization. TODO: cleanup required.
+           if(contentCreators[content.metaData.identifier] != "-" ) {
+             this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
+               element.contents[index]["orgDetails"]["orgName"] = "";
+               var orgs_count = upData.result.response.organisations.length;
+               if(orgs_count > 1) {
+                 for(var org_index = 0; org_index < orgs_count; org_index++) {
+                   if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+                     if(element.contents[index]["orgDetails"]["orgName"] != "") {
+                       element.contents[index]["orgDetails"]["orgName"] += ", ";
+                     }
+                     element.contents[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
+                   }
+                 }
+               } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+                 element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+               } else if (orgs_count == 1) {
+                 element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+               }
+               console.log("pushing element");
+               console.log(element);
+               collector.push(element);
+             });
+           } else {
+               collector.push(element);
+           }
+       });
+       //collector.push(element);
       }
       return collector;
     }, []);
