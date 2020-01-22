@@ -134,7 +134,6 @@ export class ResourceComponent implements OnInit, OnDestroy {
     const { constantData, metaData, dynamicFields, slickSize } = this.configService.appConfig.Library;
     const carouselData = _.reduce(sections, (collector, element) => {
       const contents = _.slice(_.get(element, 'contents'), 0, slickSize) || [];
-      //Sriram-- comment the lines below till end of 146 if not working
       let contentCreators = [];
         _.forEach(contents, (content, index) => {
           if(contents[index] && contents[index]['createdBy']) {
@@ -143,12 +142,8 @@ export class ResourceComponent implements OnInit, OnDestroy {
             contentCreators[contents[index]['identifier']] = "-";
           }
       });
-      console.log(contentCreators);
-      //comment out till here.
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
-        //Sriram-- comment the lines below till end of 178 if not working
-        console.log("length is: " + element.contents.length);
         _.forEach(element.contents, (content, index) => {
            if(contentCreators[content.metaData.identifier] != "-" ) {
              this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
@@ -168,16 +163,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
                } else if (orgs_count == 1) {
                  element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
                }
-               console.log("pushing element");
-               console.log(element);
-               collector.push(element);
              });
-           } else {
-               collector.push(element);
            }
        });
-       //comment out till here and uncomment the code below.
-       //collector.push(element);
+       collector.push(element);
       }
       return collector;
     }, []);
