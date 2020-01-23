@@ -184,9 +184,6 @@ export class ViewAllComponent implements OnInit, OnDestroy {
       }),
       takeUntil(this.unsubscribe)
     ).subscribe((response: any) => {
-        console.log("=============================VIEW ALL response before get contents=============================");
-        console.log(response);
-        console.log("===============================================================================");
         this.getContents(response);
     }, (error) => {
       this.showLoader = false;
@@ -206,8 +203,7 @@ export class ViewAllComponent implements OnInit, OnDestroy {
         this.pager = this.paginationService.getPager(response.contentData.result.count, this.pageNumber, this.pageLimit);
         this.searchList = this.formatSearchresults(response);
         console.log("=============================VIEW ALL get Contents=============================");
-        console.log(response.contentData);
-        console.log(this.searchList);
+        console.log(response);
         console.log("===============================================================================");
       } else {
         this.noResult = true;
@@ -306,7 +302,7 @@ export class ViewAllComponent implements OnInit, OnDestroy {
   }
 
   private formatSearchresults(response) {
-      console.log("inside format search results");
+      console.log("========inside format search results========");
       console.log(response);
       console.log("end of format search results");
     _.forEach(response.contentData.result.content, (value, index) => {
