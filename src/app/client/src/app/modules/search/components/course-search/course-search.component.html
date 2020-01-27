@@ -8,10 +8,11 @@
             </div>
         </div>
         <div class=" ui clearing segment content-player-header search-content-header" *ngIf="!showLoader && contentList.length && this.queryParams.key">
-            <div class="ui left floated header ">
-                    <p class="serch-allresult">
-                        <div [innerHTML]="{{resourceService.frmelmnts?.lbl?.showingResultsFor | interpolate:'{searchString}':this.queryParams.key}}"></div>
-                    </p>
+            <div class="ui left floated header  ">
+                    <p class="serch-allresult">{{resourceService.frmelmnts?.lbl?.showingResultsFor |
+                            interpolate:'{searchString}':this.queryParams.key}}
+                        </p>
+
             </div>
             <h5 appTelemetryInteract [telemetryInteractEdata]="closeIntractEdata" class="ui right floated basic icon circular button" [routerLink]="['/learn']">
                 <i class="ui remove icon "></i>
