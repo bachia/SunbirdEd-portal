@@ -13,6 +13,9 @@ export class CardCreationComponent {
   */
   @Input() data: ICard;
   @Input() customClass: string;
+  @Input() enableSelection: boolean;
+  @Input() index: number;
+  @Input() selectedContents: Array<string>;
   @Output() clickEvent = new EventEmitter<any>();
 
   constructor(public resourceService: ResourceService) {

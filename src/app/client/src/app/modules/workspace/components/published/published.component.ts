@@ -1,21 +1,21 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkSpace } from '../../classes/workspace';
-import { SearchService, UserService } from '@sunbird/core';
+import { SearchService, UserService, DialCodeService } from '@sunbird/core';
 import {
   ServerResponse, ConfigService, PaginationService,
   IContents, ToasterService, ResourceService, ILoaderMessage, INoResultMessage
 } from '@sunbird/shared';
-import { WorkSpaceService } from '../../services';
+import { WorkSpaceService, EditorService } from '../../services';
 import { IPagination } from '@sunbird/announcement';
 import * as _ from 'lodash';
 import { IInteractEventInput, IImpressionEventInput } from '@sunbird/telemetry';
-
 /**
  * Interface for passing the configuartion for modal
 */
 
 import { SuiModalService, TemplateModalConfig, ModalTemplate } from 'ng2-semantic-ui';
+import { map, mergeMap } from 'rxjs/operators';
 
 /**
  * The published  component search for all the published component
@@ -23,7 +23,9 @@ import { SuiModalService, TemplateModalConfig, ModalTemplate } from 'ng2-semanti
 
 @Component({
   selector: 'app-published',
-  templateUrl: './published.component.html'
+  templateUrl: './published.component.html',
+  styleUrls: ['./published.component.scss']
+
 })
 export class PublishedComponent extends WorkSpace implements OnInit {
   @ViewChild('modalTemplate')
@@ -109,17 +111,48 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   public config: ConfigService;
 
   /**
+   * To generate QR code
+   */
+  public dialCode: DialCodeService;
+
+  /**
   * To call resource service which helps to use language constant
   */
+
   public resourceService: ResourceService;
   /**
 	 * telemetryImpression
-	*/
+  */
+  
   telemetryImpression: IImpressionEventInput;
   /**
 	 * inviewLogs
-	*/
+  */
+  
   inviewLogs = [];
+  /**
+	 * qr code selection
+	*/
+  enableCheckbox: boolean;
+  /**
+     * selected contents for Qr code enable
+    */
+  contentList: Array<any> = []
+
+  /**
+   * QrcodeList
+   */
+  qrCodeList: Array<string> = [];
+
+  /**
+   * qrIndex for looping and attching content
+   */
+  qrIndex: number = 0;
+
+  /**
+   * To call editor  service
+   */
+  public editorService : EditorService;
 
   /**
     * Constructor to create injected service(s) object
@@ -130,6 +163,8 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     * @param {PaginationService} paginationService Reference of PaginationService
     * @param {ActivatedRoute} activatedRoute Reference of ActivatedRoute
     * @param {ConfigService} config Reference of ConfigService
+    * @param {DialCodeService} dialCode Reference of DialCodeService
+    * @param {EditorService} EditorService
   */
 
   constructor(public modalService: SuiModalService, public searchService: SearchService,
@@ -137,8 +172,8 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     paginationService: PaginationService,
     activatedRoute: ActivatedRoute,
     route: Router, userService: UserService,
-    toasterService: ToasterService, resourceService: ResourceService,
-    config: ConfigService) {
+    toasterService: ToasterService, resourceService: ResourceService, editorService: EditorService,
+    config: ConfigService, dialCode: DialCodeService) {
     super(searchService, workSpaceService, userService);
     this.paginationService = paginationService;
     this.route = route;
@@ -146,6 +181,8 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.toasterService = toasterService;
     this.resourceService = resourceService;
     this.config = config;
+    this.dialCode = dialCode;
+    this.editorService = editorService;
     this.state = 'published';
   }
 
@@ -303,5 +340,151 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.telemetryImpression.edata.visits = this.inviewLogs;
     this.telemetryImpression.edata.subtype = 'pageexit';
     this.telemetryImpression = Object.assign({}, this.telemetryImpression);
+  }
+
+  /**
+   * This method enables selection to attach qr code
+ */
+
+  enableQrCodeSelection() {
+    this.enableCheckbox = true;
+  }
+
+  /**
+   * Create Publisher Api
+   */
+  generatePublisher() {
+    const payload = {
+      "request": {
+        "publisher": {
+          "identifier": "ShikshaLokamLocal",
+          "name": "ShikshaLokam Local Instance"
+        }
+      }
+    }
+    this.dialCode.createPublisher(payload).subscribe(success => {
+      console.log("*******************************************");
+      console.log(success);
+      console.log("*******************************************")
+    }, error => {
+      console.log("*******************************************")
+      console.log(error);
+      console.log("*******************************************")
+
+    })
+  }
+
+  /**
+   * Generate qr code
+   */
+  generateQrCode() {
+    const payload = {
+      "request": {
+        "dialcodes": {
+          "count": this.contentList.length,
+        }
+      }
+    }
+
+    this.dialCode.generateDialCode(payload).subscribe(success => {
+      console.log("*******************************************");
+      console.log(success);
+      console.log("*******************************************");
+      this.qrCodeList = success.result.dialcodes;
+      this.attachQrCodeToContent();
+      // this.dialCode.publishQrCode(success.result.dialcodes[0]).subscribe(publishSuccess => {
+      //   console.log("Publish success");
+      //   console.log(publishSuccess)
+      // }, publishError => {
+
+      // })
+    }, error => {
+      console.log("*******************************************")
+      console.log(error);
+      console.log("*******************************************")
+    })
+
+
+
+    // let qrCode;
+    // this.dialCode.generateDialCode(payload).pipe(map(
+    //   generateSuccess => {
+    //     qrCode = generateSuccess.result.dialcodes[0];
+    //     return qrCode
+    // }),
+    // mergeMap(qrCode => this.dialCode.publishQrCode(qrCode))).subscribe(success => {
+    //   console.log("*******************************************")
+    //   console.log(success);
+    // })
+  }
+
+/**
+ * Steps to attch qr code to content
+ */
+  attachQrCodeToContent() {
+    if(this.qrIndex < this.contentList.length){
+      const linkContentPayload = {
+        request: {
+          content :{
+            identifier: [this.contentList[this.qrIndex]],
+            dialcode : [this.qrCodeList[this.qrIndex]]
+          }
+        }
+      }
+      this.dialCode.publishQrCode(this.qrCodeList[this.qrIndex]).pipe(
+        map(publishSuccess => {
+          return publishSuccess.responseCode
+        }),
+        mergeMap( response => this.dialCode.linkQrcodeToContent(linkContentPayload).pipe(
+          map(linkSuccess =>{
+            console.log("====================")
+            console.log(linkSuccess)
+          }), mergeMap(response => this.dialCode.getContent(this.contentList[this.qrIndex]).pipe(
+            map(contentDetails => {
+              return contentDetails.result
+            }), mergeMap(contentResp => this.dialCode.submitPublishChanges(contentResp.lastUpdatedBy,this.contentList[this.qrIndex]))
+          ))
+        ))).subscribe( success => {
+          console.log("*******************************************");
+          console.log(success);
+          this.qrIndex++;
+          this.attachQrCodeToContent()
+        },error => {
+          console.log("*******************************************");
+          console.log(error);
+          this.qrIndex++;
+          this.attachQrCodeToContent();
+
+        })
+    } else {
+      this.qrIndex = 0;
+    }
+
+  }
+  
+
+  /**
+   * On Done button click
+   */
+  contentsSelected() {
+    if(this.contentList.length){
+      this.generateQrCode();
+    } else {
+      this.toasterService.error("Please select atleast on content");
+    }
+  }
+
+  /**
+   * content selection
+  */
+  selectContent(params) {
+    const contentId = params.data.metaData.identifier;
+    if (this.contentList.includes(contentId)) {
+      let index = this.contentList.indexOf(contentId);
+      this.contentList.splice(index, 1);
+    } else {
+      this.contentList.push(contentId);
+    }
+    console.log(params);
   }
 }

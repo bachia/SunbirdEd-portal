@@ -1,13 +1,23 @@
 <!-- Loader -->
 <div class="twelve wide column mt-20" *ngIf="showLoader">
-  <app-loader [data] ="loaderMessage"></app-loader>
+  <app-loader [data]="loaderMessage"></app-loader>
 </div>
-
 <div class="ui grid" *ngIf="!showLoader">
+  <div class="twelve wide column qrButtonAdjust">
+    <div class="ui right floated " *ngIf="enableCheckbox"> You have selected {{contentList?.length}} resources!</div>
+    <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
+      (click)="contentsSelected()" *ngIf="enableCheckbox"> Done </button>
+    <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
+      (click)="enableQrCodeSelection()" *ngIf="!enableCheckbox"> Attach QR Code </button>
+  </div>
   <div class="twelve wide column" [appTelemetryImpression]="telemetryImpression">
-    <div class="ui stackable three column grid" in-view-container (inview)="inview($event)" [throttle]="[1000]" [trigger]="publishedContent">
-      <div in-view-item *ngFor="let content of publishedContent;let i = index;" [id]="i" [data]="content" class="column py-5 pl-10">
-       <app-card-creation [data]="content" (clickEvent)="contentClick($event)"></app-card-creation>
+    <div class="ui stackable three column grid" in-view-container (inview)="inview($event)" [throttle]="[1000]"
+      [trigger]="publishedContent">
+      <div in-view-item *ngFor="let content of publishedContent;let i = index;" [id]="i" [data]="content"
+        class="column py-5 pl-10">
+        <app-card-creation [selectedContents]="contentList" [data]="content"
+          (clickEvent)="enableCheckbox ? selectContent($event) :contentClick($event)"
+          [enableSelection]="enableCheckbox"></app-card-creation>
       </div>
     </div>
     <div *ngIf="noResult">
@@ -20,13 +30,18 @@
 <div class="ui grid">
   <div class="two wide column"></div>
   <div class="ten wide column pt-0">
-    <div class="pb-10" *ngIf="publishedContent && totalCount > config.appConfig.WORKSPACE.PAGE_LIMIT && !showLoader && !showError">
+    <div class="pb-10"
+      *ngIf="publishedContent && totalCount > config.appConfig.WORKSPACE.PAGE_LIMIT && !showLoader && !showError">
       <div class="ui pagination menu mt-10 right-floated pt-0" *ngIf="pager.pages.length ">
         <a [ngClass]="{disabled:pager.currentPage===1 }" class="item " (click)="navigateToPage(1) ">First</a>
-        <a [ngClass]="{disabled:pager.currentPage===1 }" class="item " (click)="navigateToPage(pager.currentPage - 1)">Previous</a>
-        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage===page}" (click)="navigateToPage(page)" class="item">{{page}}</a>
-        <a [ngClass]="{disabled:pager.currentPage=== pager.totalPages}" (click)="navigateToPage(pager.currentPage + 1)" class="item">Next</a>
-        <a [ngClass]="{disabled:pager.currentPage=== pager.totalPages}" (click)="navigateToPage(pager.totalPages)" class="item ">Last</a>
+        <a [ngClass]="{disabled:pager.currentPage===1 }" class="item "
+          (click)="navigateToPage(pager.currentPage - 1)">Previous</a>
+        <a *ngFor="let page of pager.pages" [ngClass]="{active:pager.currentPage===page}" (click)="navigateToPage(page)"
+          class="item">{{page}}</a>
+        <a [ngClass]="{disabled:pager.currentPage=== pager.totalPages}" (click)="navigateToPage(pager.currentPage + 1)"
+          class="item">Next</a>
+        <a [ngClass]="{disabled:pager.currentPage=== pager.totalPages}" (click)="navigateToPage(pager.totalPages)"
+          class="item ">Last</a>
       </div>
     </div>
   </div>
@@ -52,20 +67,13 @@
 
       <!--Actions-->
       <div class="sb-modal-actions">
-        <button 
-          class="sb-btn sb-btn-normal sb-btn-error" 
-          (click)="modal.approve('approved')" 
-          autofocus
-        >
+        <button class="sb-btn sb-btn-normal sb-btn-error" (click)="modal.approve('approved')" autofocus>
           {{resourceService?.frmelmnts?.btn?.yes}}
         </button>
-        <button 
-          class="sb-btn sb-btn-normal sb-btn-outline-error" 
-          (click)="modal.deny('denied')"
-        >
+        <button class="sb-btn sb-btn-normal sb-btn-outline-error" (click)="modal.deny('denied')">
           {{resourceService?.frmelmnts?.btn?.no}}
         </button>
-        
+
       </div>
       <!--/Actions-->
     </div>
