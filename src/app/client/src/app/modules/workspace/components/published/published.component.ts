@@ -16,6 +16,7 @@ import { IInteractEventInput, IImpressionEventInput } from '@sunbird/telemetry';
 
 import { SuiModalService, TemplateModalConfig, ModalTemplate } from 'ng2-semantic-ui';
 import { map, mergeMap } from 'rxjs/operators';
+import { slConfig } from '../../../../../slConfig';
 
 /**
  * The published  component search for all the published component
@@ -30,6 +31,8 @@ import { map, mergeMap } from 'rxjs/operators';
 export class PublishedComponent extends WorkSpace implements OnInit {
   @ViewChild('modalTemplate')
   public modalTemplate: ModalTemplate<{ data: string }, string, string>;
+  @ViewChild('downloadModalTemplate')
+  public downloadModalTemplate: ModalTemplate<{ data: string }, string, string>;
   /**
   * state for content editior
   */
@@ -59,9 +62,19 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   showLoader = true;
 
   /**
+     * To show / hide Qr loader
+  */
+  showQrLoader: boolean = false;
+
+  /**
    * loader message
   */
   loaderMessage: ILoaderMessage;
+
+  /**
+   * loader message
+  */
+  qrLoaderMessage: ILoaderMessage;
 
   /**
    * To show / hide error when no result found
@@ -123,12 +136,12 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   /**
 	 * telemetryImpression
   */
-  
+
   telemetryImpression: IImpressionEventInput;
   /**
 	 * inviewLogs
   */
-  
+
   inviewLogs = [];
   /**
 	 * qr code selection
@@ -145,6 +158,11 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   qrCodeList: Array<string> = [];
 
   /**
+   * QR code detailed list
+   */
+  contentDetailsList: Array<Object> = [];
+
+  /**
    * qrIndex for looping and attching content
    */
   qrIndex: number = 0;
@@ -152,7 +170,7 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   /**
    * To call editor  service
    */
-  public editorService : EditorService;
+  public editorService: EditorService;
 
   /**
     * Constructor to create injected service(s) object
@@ -225,6 +243,10 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.loaderMessage = {
       'loaderMessage': this.resourceService.messages.stmsg.m0021,
     };
+
+    this.qrLoaderMessage = {
+      loaderMessage: 'Linking QR Code to Content'
+    }
     this.search(searchParams).subscribe(
       (data: ServerResponse) => {
         if (data.result.count && data.result.content.length > 0) {
@@ -262,6 +284,19 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     } else {
       this.workSpaceService.navigateToContent(param.data.metaData, this.state);
     }
+  }
+
+  public downloadQrCode() {
+    const config = new TemplateModalConfig<{ data: string }, string, string>(this.downloadModalTemplate);
+    config.size = 'small';
+    config.transitionDuration = 0;
+    config.mustScroll = false;
+    this.modalService
+      .open(config)
+      .onApprove(result => {
+        console.log("on approve");
+        console.log(this.contentList)
+      })
   }
 
   public deleteConfirmModal(contentIds) {
@@ -405,7 +440,6 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     })
 
 
-
     // let qrCode;
     // this.dialCode.generateDialCode(payload).pipe(map(
     //   generateSuccess => {
@@ -418,16 +452,33 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     // })
   }
 
-/**
- * Steps to attch qr code to content
+  /**
+ * Generate and attach QR code
  */
+
+  generateAndAttachQrCode() {
+    this.showQrLoader = true;
+    this.showQrLoader = false;
+    const paylaod = {
+      contentData: this.contentDetailsList
+    }
+    console.log(paylaod)
+
+    this.dialCode.generateQrCodeAndLinkContent(paylaod).subscribe(success => {
+    })
+  }
+
+
+  /**
+   * Steps to attch qr code to content
+   */
   attachQrCodeToContent() {
-    if(this.qrIndex < this.contentList.length){
+    if (this.qrIndex < this.contentList.length) {
       const linkContentPayload = {
         request: {
-          content :{
+          content: {
             identifier: [this.contentList[this.qrIndex]],
-            dialcode : [this.qrCodeList[this.qrIndex]]
+            dialcode: [this.qrCodeList[this.qrIndex]]
           }
         }
       }
@@ -435,23 +486,17 @@ export class PublishedComponent extends WorkSpace implements OnInit {
         map(publishSuccess => {
           return publishSuccess.responseCode
         }),
-        mergeMap( response => this.dialCode.linkQrcodeToContent(linkContentPayload).pipe(
-          map(linkSuccess =>{
-            console.log("====================")
-            console.log(linkSuccess)
+        mergeMap(response => this.dialCode.linkQrcodeToContent(linkContentPayload).pipe(
+          map(linkSuccess => {
           }), mergeMap(response => this.dialCode.getContent(this.contentList[this.qrIndex]).pipe(
             map(contentDetails => {
               return contentDetails.result
-            }), mergeMap(contentResp => this.dialCode.submitPublishChanges(contentResp.lastUpdatedBy,this.contentList[this.qrIndex]))
+            }), mergeMap(contentResp => this.dialCode.submitPublishChanges(contentResp.lastUpdatedBy, this.contentList[this.qrIndex]))
           ))
-        ))).subscribe( success => {
-          console.log("*******************************************");
-          console.log(success);
+        ))).subscribe(success => {
           this.qrIndex++;
           this.attachQrCodeToContent()
-        },error => {
-          console.log("*******************************************");
-          console.log(error);
+        }, error => {
           this.qrIndex++;
           this.attachQrCodeToContent();
 
@@ -461,14 +506,14 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     }
 
   }
-  
+
 
   /**
    * On Done button click
    */
   contentsSelected() {
-    if(this.contentList.length){
-      this.generateQrCode();
+    if (this.contentList.length) {
+      this.generateAndAttachQrCode();
     } else {
       this.toasterService.error("Please select atleast on content");
     }
@@ -479,12 +524,22 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   */
   selectContent(params) {
     const contentId = params.data.metaData.identifier;
+    const obj = {
+      lastPublishedBy: params.data.metaData.lastPublishedBy,
+      name: params.data.metaData.name,
+      identifier: params.data.metaData.identifier
+    }
     if (this.contentList.includes(contentId)) {
       let index = this.contentList.indexOf(contentId);
       this.contentList.splice(index, 1);
+      this.contentDetailsList.splice(index, 1);
     } else {
       this.contentList.push(contentId);
+      this.contentDetailsList.push(obj);
     }
-    console.log(params);
+  }
+
+  downlaodFile() {
+    this.dialCode.downloadFile();
   }
 }

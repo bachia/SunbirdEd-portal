@@ -12,6 +12,7 @@
   "URLS": {
     "LEARNER_PREFIX": "/learner/",
     "CONTENT_PREFIX": "/content/",
+    "SHIKSHALOKAM_PREFIX":"/shikshalokam/",
     "PUBLIC_PREFIX": "/api/",
     "EXT_PLUGIN_PREFIX": "/plugin/",
     "ANNOUNCEMENT_PREFIX": "/announcement/v1",

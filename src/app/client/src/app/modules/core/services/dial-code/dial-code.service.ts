@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import { ConfigService, ServerResponse } from '@sunbird/shared';
 import { LearnerService } from './../learner/learner.service';
 import { Injectable } from '@angular/core';
@@ -10,6 +10,10 @@ import * as _ from 'lodash';
 import { PublicDataService } from '../public-data/public-data.service';
 import { environment } from '../../../../../environments/environment';
 import { ContentService } from '../content/content.service';
+import { SlKendraService } from '../sl-kendra/sl-kendra.service';
+import { slConfig } from '../../../../../slConfig';
+import { UserService } from '../user/user.service';
+import { HttpClient } from '@angular/common/http';
 
 /**
  * Service to fetch badges
@@ -30,6 +34,11 @@ export class DialCodeService {
     public publicDataService: PublicDataService;
 
     /**
+ * Reference of public data service
+ */
+    public slKendraDataService: SlKendraService;
+
+    /**
      * Reference of config service
      */
     public config: ConfigService;
@@ -44,10 +53,16 @@ export class DialCodeService {
      * reference of ContentService.
      */
     public contentService: ContentService;
-    constructor(publicDataService: PublicDataService, config: ConfigService, contentService: ContentService, ) {
+    constructor(
+        publicDataService: PublicDataService,
+        config: ConfigService,
+        contentService: ContentService,
+        slKendraDataService: SlKendraService,
+        private userService: UserService, private http: HttpClient) {
         this.publicDataService = publicDataService;
         this.contentService = contentService;
         this.config = config;
+        this.slKendraDataService = slKendraDataService;
     }
 
     /**
@@ -158,7 +173,7 @@ export class DialCodeService {
     /**
      * This method builds the request body and call the publish API.
      */
-    submitPublishChanges(userId, contentId): Observable<ServerResponse>  {
+    submitPublishChanges(userId, contentId): Observable<ServerResponse> {
         const requestBody = {
             request: {
                 content: {
@@ -174,6 +189,35 @@ export class DialCodeService {
         return this.contentService.post(option).pipe(map((response: ServerResponse) => {
             return response;
         }));
+    }
+
+    /**
+     * This methord creates request to generate and link contente to qr code
+     * @param contentList
+     * 
+     */
+    generateQrCodeAndLinkContent(contentList): Observable<any> {
+        const option = {
+            url: 'kendra',
+            data: {
+                method: "POST",
+                url: slConfig.BASE_URL + slConfig.API_URL.GENERATE_AND_LINK_QR_CODE,
+                body:contentList
+            },
+        };
+        return this.slKendraDataService.post(option).pipe(map((response: ServerResponse) => {
+            return response;
+        }),
+        catchError((err) => {
+            return err
+          }));
+    }
+
+
+    downloadFile() {
+        this.http.get("https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/qrcode%2FK3Z1M7%2FK3Z1M7.png?generation=1582795356480936&alt=media").subscribe(success => {
+        }, error => {
+        })
     }
 
 }

@@ -783,7 +783,10 @@
           "framework",
           "contentType",
           "pkgVersion",
-          "status"
+          "status",
+          "lastPublishedBy",
+          "name",
+          "dialcodes"
         ]
       },
       "dynamicFields": {

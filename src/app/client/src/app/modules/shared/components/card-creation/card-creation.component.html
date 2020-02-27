@@ -50,6 +50,9 @@
           </span>
         </a>
       </div>
+      <div *ngIf="data?.metaData?.dialcodes && data?.metaData?.dialcodes.length " class="left floated">
+        <img src="assets/images/qr.svg" style="width: 24px;">
+      </div>
       <div *ngIf=" data.action.left" class="left floated">
         <a [ngSwitch]="data.action.right.displayType">
           <span *ngSwitchCase="'button'">

@@ -2341,7 +2341,8 @@ export const mockRes = {
                     'linkedContents': 'Linked contents',
                     'publicFooterGetAccess': 'Get access to unlimited resources: worksheets, lesson plans and more!',
                     'downloadThe': 'Download the',
-                    'app': 'App'
+                    'app': 'App',
+                    'success':'Success'
                 },
                 'scttl': {
                     'todo': 'To Do',
