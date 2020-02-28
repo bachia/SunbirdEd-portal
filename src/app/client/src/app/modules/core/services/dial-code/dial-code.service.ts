@@ -1,5 +1,5 @@
 import { map, catchError } from 'rxjs/operators';
-import { ConfigService, ServerResponse } from '@sunbird/shared';
+import { ConfigService, ServerResponse, ToasterService } from '@sunbird/shared';
 import { LearnerService } from './../learner/learner.service';
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
@@ -58,7 +58,8 @@ export class DialCodeService {
         config: ConfigService,
         contentService: ContentService,
         slKendraDataService: SlKendraService,
-        private userService: UserService, private http: HttpClient) {
+        private userService: UserService, private http: HttpClient,
+        private toastService: ToasterService) {
         this.publicDataService = publicDataService;
         this.contentService = contentService;
         this.config = config;
@@ -202,20 +203,44 @@ export class DialCodeService {
             data: {
                 method: "POST",
                 url: slConfig.BASE_URL + slConfig.API_URL.GENERATE_AND_LINK_QR_CODE,
-                body:contentList
+                body: contentList
             },
         };
         return this.slKendraDataService.post(option).pipe(map((response: ServerResponse) => {
             return response;
-        }),
-        catchError((err) => {
-            return err
-          }));
+        }));
+        // ,
+            // catchError((err) => {
+            //     this.toastService.error(err.error.result.message)
+            //     return err
+            // })
+            // );
+
+            // return 
+    }
+
+
+    getPdfUrls(qrCodes) : Observable<any>{
+        const option = {
+            url: 'kendra',
+            data: {
+                method: "POST",
+                url: slConfig.BASE_URL + slConfig.API_URL.GET_PDF_LINKS,
+                body: {
+                    codes:qrCodes
+                }
+            },
+        };
+
+        return this.slKendraDataService.post(option).pipe(map((response: ServerResponse) => {
+            console.log(qrCodes);
+            return response;
+        }));
     }
 
 
     downloadFile() {
-        this.http.get("https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/qrcode%2FK3Z1M7%2FK3Z1M7.png?generation=1582795356480936&alt=media").subscribe(success => {
+        this.http.get("https://storage.googleapis.com/download/storage/v1/b/sl-dev-storage/o/qrcode%2FK3Z1M7%2FK3Z1M7.png?generation=1582795356480936&alt=media", { responseType: 'blob' }).subscribe(success => {
         }, error => {
         })
     }

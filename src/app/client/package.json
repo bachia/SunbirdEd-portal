@@ -43,6 +43,7 @@
     "angular2-uuid": "^1.1.1",
     "core-js": "^2.4.1",
     "datatables.net-dt": "1.10.19",
+    "file-saver": "^2.0.2",
     "fine-uploader": "^5.15.7",
     "font-awesome": "^4.7.0",
     "gulp-download": "0.0.1",

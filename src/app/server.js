@@ -23,7 +23,7 @@ const portal = this
 const Telemetry = require('sb_telemetry_util')
 const telemetry = new Telemetry()
 const telemtryEventConfig = JSON.parse(fs.readFileSync(path.join(__dirname, 'helpers/telemetryEventConfig.json')))
-const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const packageObj = JSON.parse(fs.readFileSync('/Users/kiran/workspace/SunbirdEd-portal/src/app/package.json', 'utf8'));
 const { frameworkAPI } = require('@project-sunbird/ext-framework-server/api');
 const frameworkConfig = require('./framework.config.js');
 const configHelper = require('./helpers/configServiceSDKHelper.js')
@@ -82,6 +82,9 @@ require('./routes/clientRoutes.js')(app, keycloak)
 
 // report routes
 require('./routes/reportRoutes.js')(app, keycloak)
+
+//Sl routes
+require('./routes/shikshalokamRoutes')(app, keycloak.protect())
 
 app.all(['/content-editor/telemetry', '/collection-editor/telemetry'], bodyParser.urlencoded({ extended: false }),
   bodyParser.json({ limit: reqDataLimitOfContentEditor }), keycloak.protect(), telemetryHelper.logSessionEvents)

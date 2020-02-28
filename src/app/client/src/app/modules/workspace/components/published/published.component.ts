@@ -17,11 +17,11 @@ import { IInteractEventInput, IImpressionEventInput } from '@sunbird/telemetry';
 import { SuiModalService, TemplateModalConfig, ModalTemplate } from 'ng2-semantic-ui';
 import { map, mergeMap } from 'rxjs/operators';
 import { slConfig } from '../../../../../slConfig';
-
+import { HttpClient } from '@angular/common/http';
+import { saveAs } from 'file-saver'
 /**
  * The published  component search for all the published component
 */
-
 @Component({
   selector: 'app-published',
   templateUrl: './published.component.html',
@@ -167,6 +167,11 @@ export class PublishedComponent extends WorkSpace implements OnInit {
    */
   qrIndex: number = 0;
 
+
+  linkedQrCode = [];
+
+  maxContentAllowed: number = 3;
+
   /**
    * To call editor  service
    */
@@ -190,8 +195,11 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     paginationService: PaginationService,
     activatedRoute: ActivatedRoute,
     route: Router, userService: UserService,
-    toasterService: ToasterService, resourceService: ResourceService, editorService: EditorService,
-    config: ConfigService, dialCode: DialCodeService) {
+    toasterService: ToasterService, resourceService: ResourceService,
+    editorService: EditorService,
+    config: ConfigService,
+    dialCode: DialCodeService,
+    private http: HttpClient) {
     super(searchService, workSpaceService, userService);
     this.paginationService = paginationService;
     this.route = route;
@@ -288,14 +296,16 @@ export class PublishedComponent extends WorkSpace implements OnInit {
 
   public downloadQrCode() {
     const config = new TemplateModalConfig<{ data: string }, string, string>(this.downloadModalTemplate);
+    config.isClosable = false;
     config.size = 'small';
     config.transitionDuration = 0;
-    config.mustScroll = false;
+    config.mustScroll = true;
     this.modalService
       .open(config)
       .onApprove(result => {
         console.log("on approve");
         console.log(this.contentList)
+        this.downlaodFile();
       })
   }
 
@@ -458,13 +468,23 @@ export class PublishedComponent extends WorkSpace implements OnInit {
 
   generateAndAttachQrCode() {
     this.showQrLoader = true;
-    this.showQrLoader = false;
     const paylaod = {
       contentData: this.contentDetailsList
     }
-    console.log(paylaod)
-
+    this.linkedQrCode = [];
     this.dialCode.generateQrCodeAndLinkContent(paylaod).subscribe(success => {
+      this.showQrLoader = false;
+      this.fetchPublishedContent(this.config.appConfig.WORKSPACE.PAGE_LIMIT, this.pageNumber);
+      for (const content of success.result.result) {
+        this.linkedQrCode.push(content.code);
+      }
+      this.contentList = [];
+      this.contentDetailsList = [];
+      this.enableCheckbox = false;
+      this.downloadQrCode();
+    }, error => {
+      this.showQrLoader = false;
+      this.toasterService.error(error.error.result.message)
     })
   }
 
@@ -523,23 +543,46 @@ export class PublishedComponent extends WorkSpace implements OnInit {
    * content selection
   */
   selectContent(params) {
-    const contentId = params.data.metaData.identifier;
-    const obj = {
-      lastPublishedBy: params.data.metaData.lastPublishedBy,
-      name: params.data.metaData.name,
-      identifier: params.data.metaData.identifier
+    if (params.data.metaData.dialcodes && params.data.metaData.dialcodes.length) {
+      this.toasterService.error(`QR code is already attached to this content.`);
+      return false
     }
-    if (this.contentList.includes(contentId)) {
-      let index = this.contentList.indexOf(contentId);
-      this.contentList.splice(index, 1);
-      this.contentDetailsList.splice(index, 1);
+    if (this.contentList.length < this.maxContentAllowed) {
+      const contentId = params.data.metaData.identifier;
+      const obj = {
+        lastPublishedBy: params.data.metaData.lastPublishedBy,
+        name: params.data.metaData.name,
+        identifier: params.data.metaData.identifier
+      }
+      if (this.contentList.includes(contentId)) {
+        let index = this.contentList.indexOf(contentId);
+        this.contentList.splice(index, 1);
+        this.contentDetailsList.splice(index, 1);
+      } else {
+        this.contentList.push(contentId);
+        this.contentDetailsList.push(obj);
+      }
     } else {
-      this.contentList.push(contentId);
-      this.contentDetailsList.push(obj);
+      this.toasterService.error(`You can only select ${this.maxContentAllowed} contents at a time`);
     }
+
   }
 
   downlaodFile() {
-    this.dialCode.downloadFile();
+    this.showQrLoader = true;
+    this.qrLoaderMessage = {
+      loaderMessage: "Fetching QR code ..."
+    };
+    this.dialCode.getPdfUrls(this.linkedQrCode).subscribe(success => {
+      for (const content of success.result.result) {
+        this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
+          const fileName = content.metaInformation.name.replace(/ /g, "_");
+          saveAs(res, fileName);
+        })
+      }
+      this.showQrLoader = false;
+    }, error => {
+      this.showQrLoader = false;
+    })
   }
 }

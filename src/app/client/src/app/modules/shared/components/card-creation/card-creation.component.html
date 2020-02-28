@@ -7,8 +7,9 @@
       </sui-progress>
     </div>
     <div class="ui image">
-      <div class="ui checkbox checklist selectionBox" *ngIf="enableSelection">
-        <input type="checkbox" class="listItem" (click)="createCheckedArray(item)" [checked]="selectedContents.includes(data?.metaData?.identifier)">
+      <div class="ui checkbox checklist selectionBox" *ngIf="enableSelection && !data?.metaData?.dialcodes?.length">
+        <input type="checkbox" class="listItem" (click)="createCheckedArray(item)"
+          [checked]="selectedContents.includes(data?.metaData?.identifier)">
         <label>{{item}}</label>
       </div>
       <a class="{{data.ribbon.left.class}}"
@@ -79,5 +80,6 @@
         </sui-rating>
       </span>
     </div>
+    <div class="overlay" *ngIf="enableSelection && data?.metaData?.dialcodes?.length"></div>
   </div>
 </div>

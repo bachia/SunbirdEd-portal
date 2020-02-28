@@ -13,7 +13,8 @@ module.exports = {
             'accept': 'application/json',
             'Authorization': 'Bearer ' + apiAuthToken,
             'x-authenticated-user-token': req.kauth.grant.access_token.token,
-            'x-authenticated-userId': req.kauth.grant.access_token.content.sub
+            'x-authenticated-userId': req.kauth.grant.access_token.content.sub,
+            'appName':'bodh'
           },
           body: req.body.body,
           json: true
@@ -45,7 +46,8 @@ module.exports = {
               id: new Date(),
               params: {
                 resmsgid: new Date(),
-                status: JSON.stringify(body.status)
+                status: JSON.stringify(body.status),
+                errmsg:response.body.message
               },
               responseCode: response.statusMessage,
               result: response.body,

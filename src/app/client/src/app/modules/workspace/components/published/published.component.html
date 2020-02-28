@@ -12,8 +12,8 @@
       (click)="contentsSelected()" *ngIf="enableCheckbox"> Done </button>
     <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
       (click)="enableQrCodeSelection()" *ngIf="!enableCheckbox"> Attach QR Code </button>
-    <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
-      (click)="downlaodFile()" *ngIf="!enableCheckbox"> Download QR Code </button>
+    <!-- <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
+      (click)="downlaodFile()" *ngIf="!enableCheckbox"> Download QR Code </button> -->
   </div>
   <div class="twelve wide column" [appTelemetryImpression]="telemetryImpression">
     <div class="ui stackable three column grid" in-view-container (inview)="inview($event)" [throttle]="[1000]"
@@ -52,6 +52,39 @@
   </div>
 </div>
 
+<!--  Download Qr code modal -->
+<ng-template let-context let-modal="modal" #downloadModalTemplate>
+  <div class="sb-modal sb-success">
+    <div class="ui modal visible active small">
+      <i class="icon close" (click)="modal.deny('denied')" tabindex="0"></i>
+
+      <!--Header-->
+      <div class="sb-modal-header">
+        Success
+      </div>
+      <!--/Header-->
+
+      <!--Content-->
+      <div class="sb-modal-content">
+        <p>All selected contents are linked with QR code. </p>
+      </div>
+      <!--/Content-->
+
+      <!--Actions-->
+      <div class="sb-modal-actions">
+        <button class="sb-btn sb-btn-normal sb-btn-success" (click)="modal.approve('approved')" autofocus>
+          Download all Qr codes
+        </button>
+        <button class="sb-btn sb-btn-normal sb-btn-outline-success" (click)="modal.deny('denied')">
+          cancel
+        </button>
+
+      </div>
+      <!--/Actions-->
+    </div>
+  </div>
+</ng-template>
+
 <!-- Delete confirm Modal-->
 <ng-template let-context let-modal="modal" #modalTemplate>
   <div class="sb-modal sb-error">
@@ -86,35 +119,3 @@
 </ng-template>
 
 
-<!--  Download Qr code modal -->
-<ng-template let-context let-modal="modal" #downloadModalTemplate>
-  <div class="sb-modal sb-success">
-    <div class="ui modal visible active small">
-      <i class="icon close" (click)="modal.deny('denied')" tabindex="0"></i>
-
-      <!--Header-->
-      <div class="sb-modal-header">
-        Success
-      </div>
-      <!--/Header-->
-
-      <!--Content-->
-      <div class="sb-modal-content">
-        <p>All selected contents are linked with QR code. </p>
-      </div>
-      <!--/Content-->
-
-      <!--Actions-->
-      <div class="sb-modal-actions">
-        <button class="sb-btn sb-btn-normal sb-btn-success" (click)="modal.approve('approved')" autofocus>
-          Download all Qr code
-        </button>
-        <button class="sb-btn sb-btn-normal sb-btn-outline-success" (click)="modal.deny('denied')">
-          cancel
-        </button>
-
-      </div>
-      <!--/Actions-->
-    </div>
-  </div>
-</ng-template>
