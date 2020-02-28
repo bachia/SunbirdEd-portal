@@ -478,9 +478,7 @@ export class PublishedComponent extends WorkSpace implements OnInit {
       for (const content of success.result.result) {
         this.linkedQrCode.push(content.code);
       }
-      this.contentList = [];
-      this.contentDetailsList = [];
-      this.enableCheckbox = false;
+      this.disableQrCodeSelection();
       this.downloadQrCode();
     }, error => {
       this.showQrLoader = false;
@@ -568,11 +566,32 @@ export class PublishedComponent extends WorkSpace implements OnInit {
 
   }
 
-  downlaodFile() {
+  downlaodFile(qrcodes?: any) {
     this.showQrLoader = true;
     this.qrLoaderMessage = {
       loaderMessage: "Fetching QR code ..."
     };
+    this.dialCode.getPdfUrls(qrcodes ? qrcodes : this.linkedQrCode).subscribe(success => {
+      for (const content of success.result.result) {
+        this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
+          const fileName = content.metaInformation.name.replace(/ /g, "_");
+          saveAs(res, fileName);
+        })
+      }
+      this.showQrLoader = false;
+    }, error => {
+      this.toasterService.error(error.error.result.message)
+      this.showQrLoader = false;
+    })
+  }
+
+  disableQrCodeSelection() {
+    this.contentList = [];
+    this.contentDetailsList = [];
+    this.enableCheckbox = false;
+  }
+
+  getCurrentContentQr(qrCode) {
     this.dialCode.getPdfUrls(this.linkedQrCode).subscribe(success => {
       for (const content of success.result.result) {
         this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
@@ -582,6 +601,7 @@ export class PublishedComponent extends WorkSpace implements OnInit {
       }
       this.showQrLoader = false;
     }, error => {
+      this.toasterService.error(error.error.result.message)
       this.showQrLoader = false;
     })
   }

@@ -51,7 +51,8 @@
           </span>
         </a>
       </div>
-      <div *ngIf="data?.metaData?.dialcodes && data?.metaData?.dialcodes.length " class="left floated">
+      <div *ngIf="data?.metaData?.dialcodes && data?.metaData?.dialcodes.length " suiPopup
+        [popupTemplate]="popupTemplate" popupTrigger="outsideClick" class="left floated" (click)="onQrClick($event)">
         <img src="assets/images/qr.svg" style="width: 24px;">
       </div>
       <div *ngIf=" data.action.left" class="left floated">
@@ -82,4 +83,27 @@
     </div>
     <div class="overlay" *ngIf="enableSelection && data?.metaData?.dialcodes?.length"></div>
   </div>
+  <ng-template let-popup #popupTemplate>
+    <!-- <div class="header">Rating</div> -->
+    <div class="content">
+        <img src="assets/images/share.svg" class="adjustIcon" suiPopup
+        [popupTemplate]="popupShare" popupTrigger="outsideClick" [popupPlacement]="right" (click)="onQrClick($event)">
+      <!-- <a href="mailto:?Subject={{data?.metaData?.name}}&body=Please find the content
+         http://link1.com  %0D http://link1.com " target="_top"><img src="assets/images/share.svg" class="adjustIcon" ></a>
+         <a href="https://web.whatsapp.com/send?text=Please find the content
+         http://link1.com  %0D http://link1.com" data-text="Take a look at this awesome website:" class="wa_btn wa_btn_s">Share1</a> -->
+      <img src="assets/images/cloud_download.svg" (click)="downloadContent(data?.metaData?.dialcodes);popup.close()">
+
+      <!-- <sui-rating class="star" (click)="popup.close()"></sui-rating> -->
+    </div>
+  </ng-template>
+
+  <ng-template let-popup  #popupShare>
+    <div class="content listBottom">
+      <a href="mailto:?Subject={{data?.metaData?.name}}&body=Please find the content
+      http://link1.com  %0D http://link1.com " target="_top" class="linkStyle">Mail</a>
+      <a href="https://web.whatsapp.com/send?text=Please find the content
+      http://link1.com  %0D http://link1.com" data-text="Take a look at this awesome website:" class="linkStyle">Whatsapp</a>
+    </div>
+  </ng-template>
 </div>

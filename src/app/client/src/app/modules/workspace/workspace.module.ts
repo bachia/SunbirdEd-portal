@@ -23,6 +23,7 @@ import { NgInviewModule } from 'angular-inport';
 import { TelemetryModule } from '@sunbird/telemetry';
 import { ReviewCommentsComponent } from './components/review-comments/review-comments.component';
 import { OrderModule } from 'ngx-order-pipe';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -36,7 +37,7 @@ import { OrderModule } from 'ngx-order-pipe';
     NgInviewModule,
     TelemetryModule,
     OrderModule
-  ],
+    ],
   declarations: [WorkspaceComponent, WorkspacesidebarComponent,
     CreateContentComponent, DraftComponent, ReviewSubmissionsComponent,
     PublishedComponent, UploadedComponent, CollectionEditorComponent,

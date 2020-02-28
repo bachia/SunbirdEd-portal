@@ -17,11 +17,25 @@ export class CardCreationComponent {
   @Input() index: number;
   @Input() selectedContents: Array<string>;
   @Output() clickEvent = new EventEmitter<any>();
+  @Output() downloadEvent = new EventEmitter<any>();
 
+  isOpen:boolean = true;
   constructor(public resourceService: ResourceService) {
   }
 
   public onAction(data, action) {
     this.clickEvent.emit({ 'action': action, 'data': data });
+  }
+
+  onQrClick(e) {
+    e.stopPropagation();
+  }
+
+  outsideClick() {
+    console.log("outside click")
+  }
+
+  downloadContent(qrcode) {
+    this.downloadEvent.emit(qrcode)
   }
 }

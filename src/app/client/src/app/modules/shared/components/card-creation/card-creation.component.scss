@@ -46,3 +46,17 @@
     height: 100%;
 }
 
+.adjustIcon {
+   width: 20px;
+   margin-right: 20px;
+}
+
+.listBottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.linkStyle {
+    padding: 5px 0;
+    text-decoration: none !important;
+}

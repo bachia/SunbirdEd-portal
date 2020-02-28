@@ -9,7 +9,9 @@
   <div class="twelve wide column qrButtonAdjust">
     <div class="ui right floated " *ngIf="enableCheckbox"> You have selected {{contentList?.length}} resources!</div>
     <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
-      (click)="contentsSelected()" *ngIf="enableCheckbox"> Done </button>
+    (click)="contentsSelected()" *ngIf="enableCheckbox"> Done </button>
+    <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-outline-gray"
+    (click)="disableQrCodeSelection()" *ngIf="enableCheckbox"> Cancel </button>
     <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
       (click)="enableQrCodeSelection()" *ngIf="!enableCheckbox"> Attach QR Code </button>
     <!-- <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
@@ -22,6 +24,7 @@
         class="column py-5 pl-10">
         <app-card-creation [selectedContents]="contentList" [data]="content"
           (clickEvent)="enableCheckbox ? selectContent($event) :contentClick($event)"
+          (downloadEvent)="downlaodFile($event)"
           [enableSelection]="enableCheckbox"></app-card-creation>
       </div>
     </div>
