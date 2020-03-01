@@ -24,7 +24,7 @@
         class="column py-5 pl-10">
         <app-card-creation [selectedContents]="contentList" [data]="content"
           (clickEvent)="enableCheckbox ? selectContent($event) :contentClick($event)"
-          (downloadEvent)="downlaodFile($event)"
+          (shareEvent)="shareActions($event)"
           [enableSelection]="enableCheckbox"></app-card-creation>
       </div>
     </div>

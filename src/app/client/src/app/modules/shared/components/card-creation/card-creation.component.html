@@ -92,18 +92,17 @@
          http://link1.com  %0D http://link1.com " target="_top"><img src="assets/images/share.svg" class="adjustIcon" ></a>
          <a href="https://web.whatsapp.com/send?text=Please find the content
          http://link1.com  %0D http://link1.com" data-text="Take a look at this awesome website:" class="wa_btn wa_btn_s">Share1</a> -->
-      <img src="assets/images/cloud_download.svg" (click)="downloadContent(data?.metaData?.dialcodes);popup.close()">
+      <img src="assets/images/cloud_download.svg" (click)="shareActions('download', data?.metaData?.dialcodes);popup.close()">
 
       <!-- <sui-rating class="star" (click)="popup.close()"></sui-rating> -->
     </div>
-  </ng-template>
 
-  <ng-template let-popup  #popupShare>
+  <ng-template let-popup1  #popupShare>
     <div class="content listBottom">
-      <a href="mailto:?Subject={{data?.metaData?.name}}&body=Please find the content
-      http://link1.com  %0D http://link1.com " target="_top" class="linkStyle">Mail</a>
-      <a href="https://web.whatsapp.com/send?text=Please find the content
-      http://link1.com  %0D http://link1.com" data-text="Take a look at this awesome website:" class="linkStyle">Whatsapp</a>
+      <a  (click)="shareActions('mailShare', data);popup.close();popup1.close()" target="_top" class="linkStyle"><img src="assets/images/email.svg" class="adjustIcon"> Mail</a>
+      <a  (click)="shareActions('whatsappShare', data);popup.close();popup1.close()" data-text="Take a look at this awesome website:" class="linkStyle"><img src="assets/images/whatsapp.svg" class="adjustIcon">Whatsapp</a>
     </div>
   </ng-template>
+  </ng-template>
+
 </div>

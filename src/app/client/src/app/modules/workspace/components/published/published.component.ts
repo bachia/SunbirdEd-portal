@@ -605,4 +605,42 @@ export class PublishedComponent extends WorkSpace implements OnInit {
       this.showQrLoader = false;
     })
   }
+
+  shareActions(details) {
+    switch (details.action) {
+      case 'download':
+        this.downlaodFile(details.data);
+        break
+      case 'mailShare':
+      case 'whatsappShare':
+        console.log(details)
+        this.createShareMessage(details);
+        break
+    }
+
+  }
+
+  createShareMessage(details) {
+    this.showQrLoader = true;
+    this.qrLoaderMessage = {
+      loaderMessage: "Fetching QR code ..."
+    };
+    this.dialCode.getPdfUrls(details.data.metaData.dialcodes).subscribe(success => {
+      for (const content of success.result.result) {
+        this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
+          this.showQrLoader = false;
+          if (details.action === 'whatsappShare') {
+            window.open(`https://web.whatsapp.com/send?text=Please find the link to QR code for content ${details.data.name}
+            ${encodeURIComponent(content.url)}`, '_blank');
+          } else {
+            window.open(`mailto:?Subject=QR code link&body=Please find the link to QR code for content ${details.data.name}
+            ${encodeURIComponent(content.url)} `);
+          }
+        })
+      }
+    }, error => {
+      this.toasterService.error(error.error.result.message)
+      this.showQrLoader = false;
+    })
+  }
 }

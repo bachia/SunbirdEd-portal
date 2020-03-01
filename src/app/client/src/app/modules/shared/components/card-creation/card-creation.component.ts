@@ -17,7 +17,7 @@ export class CardCreationComponent {
   @Input() index: number;
   @Input() selectedContents: Array<string>;
   @Output() clickEvent = new EventEmitter<any>();
-  @Output() downloadEvent = new EventEmitter<any>();
+  @Output() shareEvent = new EventEmitter<any>();
 
   isOpen:boolean = true;
   constructor(public resourceService: ResourceService) {
@@ -35,7 +35,7 @@ export class CardCreationComponent {
     console.log("outside click")
   }
 
-  downloadContent(qrcode) {
-    this.downloadEvent.emit(qrcode)
+  shareActions(action, data) {
+    this.shareEvent.emit({action: action, data: data })
   }
 }
