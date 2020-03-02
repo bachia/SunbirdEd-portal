@@ -31,4 +31,34 @@
 .ui.card:hover{
     box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
 }
+.selectionBox {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    z-index: 2;
+}
+.overlay {
+    background: #fff;
+    opacity: .5;
+    position: absolute;
+    z-index: 4;
+    width: 100%;
+    height: 100%;
+}
 
+.adjustIcon {
+   width: 20px;
+   margin-right: 20px;
+}
+
+.listBottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.linkStyle {
+    padding: 5px 0;
+    text-decoration: none !important;
+    display: flex;
+    color: #000;
+}

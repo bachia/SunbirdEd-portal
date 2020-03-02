@@ -1568,7 +1568,8 @@ export const mockRes = {
                         'm0079': 'Assigning badge failed, please try again later...',
                         'm0080': 'Fetching badge failed, please try again later...',
                         'm0081': 'Fetching all content failed, please try again later...',
-                        'm0082': 'This course is not opened for enrolling'
+                        'm0082': 'This course is not opened for enrolling',
+                        'm0083': 'Please select contents to generate QR code'
                     },
                     'smsg': {
                         'm0001': 'success',
@@ -2340,7 +2341,8 @@ export const mockRes = {
                     'linkedContents': 'Linked contents',
                     'publicFooterGetAccess': 'Get access to unlimited resources: worksheets, lesson plans and more!',
                     'downloadThe': 'Download the',
-                    'app': 'App'
+                    'app': 'App',
+                    'success':'Success'
                 },
                 'scttl': {
                     'todo': 'To Do',

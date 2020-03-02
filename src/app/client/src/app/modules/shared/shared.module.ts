@@ -24,6 +24,7 @@ import { DeviceDetectorService } from 'ngx-device-detector';
 import { TelemetryModule } from '@sunbird/telemetry';
 import { NgInviewModule } from 'angular-inport';
 import { CdnprefixPipe } from './pipes/cdnprefix.pipe';
+import { FullPageLoaderComponent } from './components/full-page-loader/full-page-loader.component';
 
 @NgModule({
   imports: [
@@ -40,12 +41,13 @@ import { CdnprefixPipe } from './pipes/cdnprefix.pipe';
     CollectionTreeComponent, FancyTreeComponent, PlayerComponent, CardComponent, CardCreationComponent, FilterPipe, InterpolatePipe,
     ShareLinkComponent, CollectionPlayerMetadataComponent, BrowserCompatibilityComponent, QrCodeModalComponent, CdnprefixPipe,
     RedirectComponent, CustomMultiSelectComponent, InstallAppComponent, LockInfoPopupComponent, ContentDirectionDirective,
-    DataTableComponent],
+    DataTableComponent,
+    FullPageLoaderComponent],
   exports: [AppLoaderComponent, ContentCreditsComponent, AnnouncementInboxCardComponent, DateFormatPipe, DateFilterXtimeAgoPipe,
     PageSectionComponent, BatchCardComponent, NoResultComponent, CollectionTreeComponent, FancyTreeComponent,
     PlayerComponent, CardComponent, CardCreationComponent, FilterPipe, ShareLinkComponent, CollectionPlayerMetadataComponent,
     BrowserCompatibilityComponent, QrCodeModalComponent, CdnprefixPipe, InterpolatePipe, RedirectComponent, CustomMultiSelectComponent,
-    InstallAppComponent, LockInfoPopupComponent, ContentDirectionDirective, DataTableComponent]
+    InstallAppComponent, LockInfoPopupComponent, ContentDirectionDirective, DataTableComponent, FullPageLoaderComponent]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {

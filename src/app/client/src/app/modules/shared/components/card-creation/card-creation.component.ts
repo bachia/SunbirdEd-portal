@@ -13,12 +13,29 @@ export class CardCreationComponent {
   */
   @Input() data: ICard;
   @Input() customClass: string;
+  @Input() enableSelection: boolean;
+  @Input() index: number;
+  @Input() selectedContents: Array<string>;
   @Output() clickEvent = new EventEmitter<any>();
+  @Output() shareEvent = new EventEmitter<any>();
 
+  isOpen:boolean = true;
   constructor(public resourceService: ResourceService) {
   }
 
   public onAction(data, action) {
     this.clickEvent.emit({ 'action': action, 'data': data });
+  }
+
+  onQrClick(e) {
+    e.stopPropagation();
+  }
+
+  outsideClick() {
+    console.log("outside click")
+  }
+
+  shareActions(action, data) {
+    this.shareEvent.emit({action: action, data: data })
   }
 }

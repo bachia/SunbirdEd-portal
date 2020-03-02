@@ -1,33 +1,38 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { WorkSpace } from '../../classes/workspace';
-import { SearchService, UserService } from '@sunbird/core';
+import { SearchService, UserService, DialCodeService } from '@sunbird/core';
 import {
   ServerResponse, ConfigService, PaginationService,
   IContents, ToasterService, ResourceService, ILoaderMessage, INoResultMessage
 } from '@sunbird/shared';
-import { WorkSpaceService } from '../../services';
+import { WorkSpaceService, EditorService } from '../../services';
 import { IPagination } from '@sunbird/announcement';
 import * as _ from 'lodash';
 import { IInteractEventInput, IImpressionEventInput } from '@sunbird/telemetry';
-
 /**
  * Interface for passing the configuartion for modal
 */
 
 import { SuiModalService, TemplateModalConfig, ModalTemplate } from 'ng2-semantic-ui';
-
+import { map, mergeMap } from 'rxjs/operators';
+import { slConfig } from '../../../../../slConfig';
+import { HttpClient } from '@angular/common/http';
+import { saveAs } from 'file-saver'
 /**
  * The published  component search for all the published component
 */
-
 @Component({
   selector: 'app-published',
-  templateUrl: './published.component.html'
+  templateUrl: './published.component.html',
+  styleUrls: ['./published.component.scss']
+
 })
 export class PublishedComponent extends WorkSpace implements OnInit {
   @ViewChild('modalTemplate')
   public modalTemplate: ModalTemplate<{ data: string }, string, string>;
+  @ViewChild('downloadModalTemplate')
+  public downloadModalTemplate: ModalTemplate<{ data: string }, string, string>;
   /**
   * state for content editior
   */
@@ -57,9 +62,19 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   showLoader = true;
 
   /**
+     * To show / hide Qr loader
+  */
+  showQrLoader: boolean = false;
+
+  /**
    * loader message
   */
   loaderMessage: ILoaderMessage;
+
+  /**
+   * loader message
+  */
+  qrLoaderMessage: ILoaderMessage;
 
   /**
    * To show / hide error when no result found
@@ -109,17 +124,58 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   public config: ConfigService;
 
   /**
+   * To generate QR code
+   */
+  public dialCode: DialCodeService;
+
+  /**
   * To call resource service which helps to use language constant
   */
+
   public resourceService: ResourceService;
   /**
 	 * telemetryImpression
-	*/
+  */
+
   telemetryImpression: IImpressionEventInput;
   /**
 	 * inviewLogs
-	*/
+  */
+
   inviewLogs = [];
+  /**
+	 * qr code selection
+	*/
+  enableCheckbox: boolean;
+  /**
+     * selected contents for Qr code enable
+    */
+  contentList: Array<any> = []
+
+  /**
+   * QrcodeList
+   */
+  qrCodeList: Array<string> = [];
+
+  /**
+   * QR code detailed list
+   */
+  contentDetailsList: Array<Object> = [];
+
+  /**
+   * qrIndex for looping and attching content
+   */
+  qrIndex: number = 0;
+
+
+  linkedQrCode = [];
+
+  maxContentAllowed: number = 3;
+
+  /**
+   * To call editor  service
+   */
+  public editorService: EditorService;
 
   /**
     * Constructor to create injected service(s) object
@@ -130,6 +186,8 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     * @param {PaginationService} paginationService Reference of PaginationService
     * @param {ActivatedRoute} activatedRoute Reference of ActivatedRoute
     * @param {ConfigService} config Reference of ConfigService
+    * @param {DialCodeService} dialCode Reference of DialCodeService
+    * @param {EditorService} EditorService
   */
 
   constructor(public modalService: SuiModalService, public searchService: SearchService,
@@ -138,7 +196,10 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     activatedRoute: ActivatedRoute,
     route: Router, userService: UserService,
     toasterService: ToasterService, resourceService: ResourceService,
-    config: ConfigService) {
+    editorService: EditorService,
+    config: ConfigService,
+    dialCode: DialCodeService,
+    private http: HttpClient) {
     super(searchService, workSpaceService, userService);
     this.paginationService = paginationService;
     this.route = route;
@@ -146,6 +207,8 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.toasterService = toasterService;
     this.resourceService = resourceService;
     this.config = config;
+    this.dialCode = dialCode;
+    this.editorService = editorService;
     this.state = 'published';
   }
 
@@ -188,6 +251,10 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.loaderMessage = {
       'loaderMessage': this.resourceService.messages.stmsg.m0021,
     };
+
+    this.qrLoaderMessage = {
+      loaderMessage: 'Linking QR Code to Content'
+    }
     this.search(searchParams).subscribe(
       (data: ServerResponse) => {
         if (data.result.count && data.result.content.length > 0) {
@@ -225,6 +292,21 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     } else {
       this.workSpaceService.navigateToContent(param.data.metaData, this.state);
     }
+  }
+
+  public downloadQrCode() {
+    const config = new TemplateModalConfig<{ data: string }, string, string>(this.downloadModalTemplate);
+    config.isClosable = false;
+    config.size = 'small';
+    config.transitionDuration = 0;
+    config.mustScroll = true;
+    this.modalService
+      .open(config)
+      .onApprove(result => {
+        console.log("on approve");
+        console.log(this.contentList)
+        this.downlaodFile();
+      })
   }
 
   public deleteConfirmModal(contentIds) {
@@ -303,5 +385,260 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.telemetryImpression.edata.visits = this.inviewLogs;
     this.telemetryImpression.edata.subtype = 'pageexit';
     this.telemetryImpression = Object.assign({}, this.telemetryImpression);
+  }
+
+  /**
+   * This method enables selection to attach qr code
+ */
+
+  enableQrCodeSelection() {
+    this.enableCheckbox = true;
+  }
+
+  /**
+   * Create Publisher Api
+   */
+  generatePublisher() {
+    const payload = {
+      "request": {
+        "publisher": {
+          "identifier": "ShikshaLokamLocal",
+          "name": "ShikshaLokam Local Instance"
+        }
+      }
+    }
+    this.dialCode.createPublisher(payload).subscribe(success => {
+      console.log("*******************************************");
+      console.log(success);
+      console.log("*******************************************")
+    }, error => {
+      console.log("*******************************************")
+      console.log(error);
+      console.log("*******************************************")
+
+    })
+  }
+
+  /**
+   * Generate qr code
+   */
+  generateQrCode() {
+    const payload = {
+      "request": {
+        "dialcodes": {
+          "count": this.contentList.length,
+        }
+      }
+    }
+
+    this.dialCode.generateDialCode(payload).subscribe(success => {
+      console.log("*******************************************");
+      console.log(success);
+      console.log("*******************************************");
+      this.qrCodeList = success.result.dialcodes;
+      this.attachQrCodeToContent();
+      // this.dialCode.publishQrCode(success.result.dialcodes[0]).subscribe(publishSuccess => {
+      //   console.log("Publish success");
+      //   console.log(publishSuccess)
+      // }, publishError => {
+
+      // })
+    }, error => {
+      console.log("*******************************************")
+      console.log(error);
+      console.log("*******************************************")
+    })
+
+
+    // let qrCode;
+    // this.dialCode.generateDialCode(payload).pipe(map(
+    //   generateSuccess => {
+    //     qrCode = generateSuccess.result.dialcodes[0];
+    //     return qrCode
+    // }),
+    // mergeMap(qrCode => this.dialCode.publishQrCode(qrCode))).subscribe(success => {
+    //   console.log("*******************************************")
+    //   console.log(success);
+    // })
+  }
+
+  /**
+ * Generate and attach QR code
+ */
+
+  generateAndAttachQrCode() {
+    this.showQrLoader = true;
+    const paylaod = {
+      contentData: this.contentDetailsList
+    }
+    this.linkedQrCode = [];
+    this.dialCode.generateQrCodeAndLinkContent(paylaod).subscribe(success => {
+      this.showQrLoader = false;
+      this.fetchPublishedContent(this.config.appConfig.WORKSPACE.PAGE_LIMIT, this.pageNumber);
+      for (const content of success.result.result) {
+        this.linkedQrCode.push(content.code);
+      }
+      this.disableQrCodeSelection();
+      this.downloadQrCode();
+    }, error => {
+      this.showQrLoader = false;
+      this.toasterService.error(error.error.result.message)
+    })
+  }
+
+
+  /**
+   * Steps to attch qr code to content
+   */
+  attachQrCodeToContent() {
+    if (this.qrIndex < this.contentList.length) {
+      const linkContentPayload = {
+        request: {
+          content: {
+            identifier: [this.contentList[this.qrIndex]],
+            dialcode: [this.qrCodeList[this.qrIndex]]
+          }
+        }
+      }
+      this.dialCode.publishQrCode(this.qrCodeList[this.qrIndex]).pipe(
+        map(publishSuccess => {
+          return publishSuccess.responseCode
+        }),
+        mergeMap(response => this.dialCode.linkQrcodeToContent(linkContentPayload).pipe(
+          map(linkSuccess => {
+          }), mergeMap(response => this.dialCode.getContent(this.contentList[this.qrIndex]).pipe(
+            map(contentDetails => {
+              return contentDetails.result
+            }), mergeMap(contentResp => this.dialCode.submitPublishChanges(contentResp.lastUpdatedBy, this.contentList[this.qrIndex]))
+          ))
+        ))).subscribe(success => {
+          this.qrIndex++;
+          this.attachQrCodeToContent()
+        }, error => {
+          this.qrIndex++;
+          this.attachQrCodeToContent();
+
+        })
+    } else {
+      this.qrIndex = 0;
+    }
+
+  }
+
+
+  /**
+   * On Done button click
+   */
+  contentsSelected() {
+    if (this.contentList.length) {
+      this.generateAndAttachQrCode();
+    } else {
+      this.toasterService.error("Please select atleast on content");
+    }
+  }
+
+  /**
+   * content selection
+  */
+  selectContent(params) {
+    if (params.data.metaData.dialcodes && params.data.metaData.dialcodes.length) {
+      this.toasterService.error(`QR code is already attached to this content.`);
+      return false
+    }
+    if (this.contentList.length < this.maxContentAllowed) {
+      const contentId = params.data.metaData.identifier;
+      const obj = {
+        lastPublishedBy: params.data.metaData.lastPublishedBy,
+        name: params.data.metaData.name,
+        identifier: params.data.metaData.identifier
+      }
+      if (this.contentList.includes(contentId)) {
+        let index = this.contentList.indexOf(contentId);
+        this.contentList.splice(index, 1);
+        this.contentDetailsList.splice(index, 1);
+      } else {
+        this.contentList.push(contentId);
+        this.contentDetailsList.push(obj);
+      }
+    } else {
+      this.toasterService.error(`You can only select ${this.maxContentAllowed} contents at a time`);
+    }
+
+  }
+
+  downlaodFile(qrcodes?: any) {
+    this.showQrLoader = true;
+    this.qrLoaderMessage = {
+      loaderMessage: "Fetching QR code ..."
+    };
+    this.dialCode.getPdfUrls(qrcodes ? qrcodes : this.linkedQrCode).subscribe(success => {
+      for (const content of success.result.result) {
+        this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
+          const fileName = content.metaInformation.name.replace(/ /g, "_");
+          saveAs(res, fileName);
+        })
+      }
+      this.showQrLoader = false;
+    }, error => {
+      this.toasterService.error(error.error.result.message)
+      this.showQrLoader = false;
+    })
+  }
+
+  disableQrCodeSelection() {
+    this.contentList = [];
+    this.contentDetailsList = [];
+    this.enableCheckbox = false;
+  }
+
+  getCurrentContentQr(qrCode) {
+    this.dialCode.getPdfUrls(this.linkedQrCode).subscribe(success => {
+      for (const content of success.result.result) {
+        this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
+          const fileName = content.metaInformation.name.replace(/ /g, "_");
+          saveAs(res, fileName);
+        })
+      }
+      this.showQrLoader = false;
+    }, error => {
+      this.toasterService.error(error.error.result.message)
+      this.showQrLoader = false;
+    })
+  }
+
+  shareActions(details) {
+    switch (details.action) {
+      case 'download':
+        this.downlaodFile(details.data);
+        break
+      case 'mailShare':
+      case 'whatsappShare':
+        console.log(details)
+        this.createShareMessage(details);
+        break
+    }
+
+  }
+
+  createShareMessage(details) {
+    this.showQrLoader = true;
+    this.qrLoaderMessage = {
+      loaderMessage: "Fetching QR code ..."
+    };
+    this.dialCode.getPdfUrls(details.data.metaData.dialcodes).subscribe(success => {
+      for (const content of success.result.result) {
+        this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
+          this.showQrLoader = false;
+          if (details.action === 'whatsappShare') {
+            window.open(`https://web.whatsapp.com/send?text=Dear Learner,%0D%0AAttached is the QR code for ${details.data.name}. Click here to continue learning.%0D%0A${encodeURIComponent(content.url)}`, '_blank');
+          } else {
+            window.open(`mailto:?Subject=QR code for ${details.data.name} link&body=Dear Learner,%0D%0A%0D%0AAttached is the QR code for ${details.data.name}. Click here to continue learning.%0D%0A${encodeURIComponent(content.url)} `);
+          }
+        })
+      }
+    }, error => {
+      this.toasterService.error(error.error.result.message)
+      this.showQrLoader = false;
+    })
   }
 }
