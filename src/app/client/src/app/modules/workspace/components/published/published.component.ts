@@ -630,11 +630,9 @@ export class PublishedComponent extends WorkSpace implements OnInit {
         this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
           this.showQrLoader = false;
           if (details.action === 'whatsappShare') {
-            window.open(`https://web.whatsapp.com/send?text=Please find the link to QR code for content ${details.data.name}
-            ${encodeURIComponent(content.url)}`, '_blank');
+            window.open(`https://web.whatsapp.com/send?text=Dear Learner,%0D%0AAttached is the QR code for ${details.data.name}. Click here to continue learning.%0D%0A${encodeURIComponent(content.url)}`, '_blank');
           } else {
-            window.open(`mailto:?Subject=QR code link&body=Please find the link to QR code for content ${details.data.name}
-            ${encodeURIComponent(content.url)} `);
+            window.open(`mailto:?Subject=QR code for ${details.data.name} link&body=Dear Learner,%0D%0A%0D%0AAttached is the QR code for ${details.data.name}. Click here to continue learning.%0D%0A${encodeURIComponent(content.url)} `);
           }
         })
       }
