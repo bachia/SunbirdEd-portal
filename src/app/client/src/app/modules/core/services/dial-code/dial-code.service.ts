@@ -71,24 +71,24 @@ export class DialCodeService {
      * @param requestParam 
      * @param request 
      */
-    generateDialCode(requestParam: IDialParams): Observable<ServerResponse> {
-        const option = {
-            url: this.config.urlConFig.URLS.DIAL_CODE.GENERATE_DIAL_CODE,
-            param: {},
-            data: {
-                request: {
-                    dialcodes: {
-                        count: requestParam.request.dialcodes.count,
-                        publisher: environment.publisher
-                    }
-                }
-            }
-        };
-        return this.publicDataService.post(option).pipe(
-            map((data: ServerResponse) => {
-                return data;
-            }));
-    }
+    // generateDialCode(requestParam: IDialParams): Observable<ServerResponse> {
+    //     const option = {
+    //         url: this.config.urlConFig.URLS.DIAL_CODE.GENERATE_DIAL_CODE,
+    //         param: {},
+    //         data: {
+    //             request: {
+    //                 dialcodes: {
+    //                     count: requestParam.request.dialcodes.count,
+    //                     publisher: environment.publisher
+    //                 }
+    //             }
+    //         }
+    //     };
+    //     return this.publicDataService.post(option).pipe(
+    //         map((data: ServerResponse) => {
+    //             return data;
+    //         }));
+    // }
 
     /**
      * Create Publisher

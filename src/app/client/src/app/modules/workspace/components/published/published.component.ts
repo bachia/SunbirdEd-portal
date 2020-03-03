@@ -422,45 +422,45 @@ export class PublishedComponent extends WorkSpace implements OnInit {
   /**
    * Generate qr code
    */
-  generateQrCode() {
-    const payload = {
-      "request": {
-        "dialcodes": {
-          "count": this.contentList.length,
-        }
-      }
-    }
+  // generateQrCode() {
+  //   const payload = {
+  //     "request": {
+  //       "dialcodes": {
+  //         "count": this.contentList.length,
+  //       }
+  //     }
+  //   }
 
-    this.dialCode.generateDialCode(payload).subscribe(success => {
-      console.log("*******************************************");
-      console.log(success);
-      console.log("*******************************************");
-      this.qrCodeList = success.result.dialcodes;
-      this.attachQrCodeToContent();
-      // this.dialCode.publishQrCode(success.result.dialcodes[0]).subscribe(publishSuccess => {
-      //   console.log("Publish success");
-      //   console.log(publishSuccess)
-      // }, publishError => {
+  //   this.dialCode.generateDialCode(payload).subscribe(success => {
+  //     console.log("*******************************************");
+  //     console.log(success);
+  //     console.log("*******************************************");
+  //     this.qrCodeList = success.result.dialcodes;
+  //     this.attachQrCodeToContent();
+  //     // this.dialCode.publishQrCode(success.result.dialcodes[0]).subscribe(publishSuccess => {
+  //     //   console.log("Publish success");
+  //     //   console.log(publishSuccess)
+  //     // }, publishError => {
 
-      // })
-    }, error => {
-      console.log("*******************************************")
-      console.log(error);
-      console.log("*******************************************")
-    })
+  //     // })
+  //   }, error => {
+  //     console.log("*******************************************")
+  //     console.log(error);
+  //     console.log("*******************************************")
+  //   })
 
 
-    // let qrCode;
-    // this.dialCode.generateDialCode(payload).pipe(map(
-    //   generateSuccess => {
-    //     qrCode = generateSuccess.result.dialcodes[0];
-    //     return qrCode
-    // }),
-    // mergeMap(qrCode => this.dialCode.publishQrCode(qrCode))).subscribe(success => {
-    //   console.log("*******************************************")
-    //   console.log(success);
-    // })
-  }
+  //   // let qrCode;
+  //   // this.dialCode.generateDialCode(payload).pipe(map(
+  //   //   generateSuccess => {
+  //   //     qrCode = generateSuccess.result.dialcodes[0];
+  //   //     return qrCode
+  //   // }),
+  //   // mergeMap(qrCode => this.dialCode.publishQrCode(qrCode))).subscribe(success => {
+  //   //   console.log("*******************************************")
+  //   //   console.log(success);
+  //   // })
+  // }
 
   /**
  * Generate and attach QR code
