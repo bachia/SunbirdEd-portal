@@ -574,7 +574,7 @@ export class PublishedComponent extends WorkSpace implements OnInit {
     this.dialCode.getPdfUrls(qrcodes ? qrcodes : this.linkedQrCode).subscribe(success => {
       for (const content of success.result.result) {
         this.http.get(content.url, { responseType: 'blob' }).subscribe(res => {
-          const fileName = content.metaInformation.name.replace(/ /g, "_");
+          const fileName = content.metaInformation.name.replace(/ /g, "_")+'.pdf';
           saveAs(res, fileName);
         })
       }
