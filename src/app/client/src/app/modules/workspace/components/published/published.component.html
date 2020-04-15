@@ -6,7 +6,7 @@
   <app-full-page-loader [data]="qrLoaderMessage"></app-full-page-loader>
 </div>
 <div class="ui grid" *ngIf="!showLoader">
-  <div class="twelve wide column qrButtonAdjust">
+  <!-- <div class="twelve wide column qrButtonAdjust">
     <div class="ui right floated " *ngIf="enableCheckbox"> You have selected {{contentList?.length}} resources!</div>
     <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
     (click)="contentsSelected()" *ngIf="enableCheckbox"> Done </button>
@@ -14,9 +14,7 @@
     (click)="disableQrCodeSelection()" *ngIf="enableCheckbox"> Cancel </button>
     <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
       (click)="enableQrCodeSelection()" *ngIf="!enableCheckbox"> Attach QR Code </button>
-    <!-- <button apptelemetryinteract="" class="ui right floated sb-btn sb-btn-normal sb-btn-primary"
-      (click)="downlaodFile()" *ngIf="!enableCheckbox"> Download QR Code </button> -->
-  </div>
+  </div> -->
   <div class="twelve wide column" [appTelemetryImpression]="telemetryImpression">
     <div class="ui stackable three column grid" in-view-container (inview)="inview($event)" [throttle]="[1000]"
       [trigger]="publishedContent">
