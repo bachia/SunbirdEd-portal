@@ -1,11 +1,11 @@
 
 import { takeUntil } from 'rxjs/operators';
-import { UserService, CoursesService } from '@sunbird/core';
+import { UserService, CoursesService, SlUtilsService } from '@sunbird/core';
 import { ResourceService, ToasterService, ConfigService } from '@sunbird/shared';
 import { CourseBatchService } from './../../../services';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IImpressionEventInput,  IInteractEventObject, IInteractEventEdata  } from '@sunbird/telemetry';
+import { IImpressionEventInput, IInteractEventObject, IInteractEventEdata } from '@sunbird/telemetry';
 import * as _ from 'lodash';
 import { Subject } from 'rxjs';
 
@@ -30,7 +30,7 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
   telemetryImpression: IImpressionEventInput;
   constructor(public router: Router, public activatedRoute: ActivatedRoute, public courseBatchService: CourseBatchService,
     public resourceService: ResourceService, public toasterService: ToasterService, public userService: UserService,
-    public configService: ConfigService, public coursesService: CoursesService) { }
+    public configService: ConfigService, public coursesService: CoursesService, private slUtils: SlUtilsService) { }
 
   ngOnInit() {
     this.activatedRoute.params.subscribe((params) => {
@@ -112,6 +112,14 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
     this.courseBatchService.enrollToCourse(request).pipe(
       takeUntil(this.unsubscribe))
       .subscribe((data) => {
+        const payload = {
+          batchId: this.batchDetails.identifier,
+          userIds: [this.userService.userid],
+          courseId: this.batchDetails.courseId
+        }
+        this.slUtils.syncBatchApi(payload).subscribe(success => {
+        }, error => {
+        })
         this.disableSubmitBtn = true;
         this.fetchEnrolledCourseData();
       }, (err) => {
@@ -140,6 +148,6 @@ export class EnrollBatchComponent implements OnInit, OnDestroy {
       type: 'click',
       pageid: 'course-consumption'
     };
-    this.telemetryCdata = [{ 'type': 'batch', 'id': this.batchDetails.identifier}];
+    this.telemetryCdata = [{ 'type': 'batch', 'id': this.batchDetails.identifier }];
   }
 }

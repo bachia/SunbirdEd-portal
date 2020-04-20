@@ -3,12 +3,13 @@ import { takeUntil, mergeMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterNavigationService, ResourceService, ToasterService, ServerResponse } from '@sunbird/shared';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserService } from '@sunbird/core';
+import { UserService, SlUtilsService } from '@sunbird/core';
 import { CourseConsumptionService, CourseBatchService } from './../../../services';
 import { IImpressionEventInput } from '@sunbird/telemetry';
 import * as _ from 'lodash';
 import * as moment from 'moment';
 import { Subject, combineLatest } from 'rxjs';
+
 @Component({
   selector: 'app-create-batch',
   templateUrl: './create-batch.component.html'
@@ -99,7 +100,8 @@ export class CreateBatchComponent implements OnInit, OnDestroy {
     resourceService: ResourceService, userService: UserService,
     courseBatchService: CourseBatchService,
     toasterService: ToasterService,
-    courseConsumptionService: CourseConsumptionService) {
+    courseConsumptionService: CourseConsumptionService,
+    private slUtils: SlUtilsService) {
     this.resourceService = resourceService;
     this.router = route;
     this.activatedRoute = activatedRoute;
@@ -220,7 +222,7 @@ export class CreateBatchComponent implements OnInit, OnDestroy {
       endDate: endDate || null,
       createdBy: this.userService.userid,
       createdFor: this.userService.userProfile.organisationIds,
-      mentors: _.compact(mentors)
+      mentors: _.compact(mentors) 
     };
     this.courseBatchService.createBatch(requestBody).pipe(takeUntil(this.unsubscribe))
       .subscribe((response) => {
@@ -247,6 +249,16 @@ export class CreateBatchComponent implements OnInit, OnDestroy {
     };
     this.courseBatchService.addUsersToBatch(userRequest, batchId).pipe(takeUntil(this.unsubscribe))
       .subscribe((res) => {
+        const payload = {
+          batchId: batchId,
+          userIds: userRequest.userIds,
+          courseId: this.courseId
+        };
+        this.slUtils.syncBatchApi(payload).subscribe(success => {
+
+        },error => {
+
+        })
         this.disableSubmitBtn = false;
         this.toasterService.success(this.resourceService.messages.smsg.m0033);
         this.reload();

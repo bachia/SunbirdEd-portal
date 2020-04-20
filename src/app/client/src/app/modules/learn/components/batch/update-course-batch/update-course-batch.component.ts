@@ -1,15 +1,16 @@
 
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {combineLatest, Subject } from 'rxjs';
-import {takeUntil,  mergeMap } from 'rxjs/operators';
+import { combineLatest, Subject } from 'rxjs';
+import { takeUntil, mergeMap } from 'rxjs/operators';
 import { RouterNavigationService, ResourceService, ToasterService, ServerResponse } from '@sunbird/shared';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { UserService } from '@sunbird/core';
+import { UserService, SlUtilsService } from '@sunbird/core';
 import { CourseConsumptionService, CourseBatchService } from './../../../services';
 import { IImpressionEventInput } from '@sunbird/telemetry';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+
 @Component({
   selector: 'app-update-course-batch',
   templateUrl: './update-course-batch.component.html'
@@ -114,7 +115,8 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
     resourceService: ResourceService, userService: UserService,
     courseBatchService: CourseBatchService,
     toasterService: ToasterService,
-    courseConsumptionService: CourseConsumptionService) {
+    courseConsumptionService: CourseConsumptionService,
+    private slutils: SlUtilsService) {
     this.resourceService = resourceService;
     this.router = route;
     this.activatedRoute = activatedRoute;
@@ -161,7 +163,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
   }
   private fetchBatchDetails() {
     const requestBody = {
-      filters: {'status': '1'},
+      filters: { 'status': '1' },
     };
     return combineLatest(
       this.courseBatchService.getUserList(requestBody),
@@ -207,7 +209,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
         filters: {
           identifier: userList
         },
-        limit : userList.length
+        limit: userList.length
       };
       this.courseBatchService.getUserList(request).pipe(takeUntil(this.unsubscribe))
         .subscribe((res) => {
@@ -251,8 +253,8 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
     const mentorList = [];
     if (res.result.response.content && res.result.response.content.length > 0) {
       _.forEach(res.result.response.content, (userData) => {
-        if ( _.find(this.selectedMentors , {'id': userData.identifier }) ||
-        _.find(this.selectedParticipants , {'id': userData.identifier })) {
+        if (_.find(this.selectedMentors, { 'id': userData.identifier }) ||
+          _.find(this.selectedParticipants, { 'id': userData.identifier })) {
           return;
         }
         if (userData.identifier !== this.userService.userid) {
@@ -311,7 +313,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
   */
   private getUserList(query: string = '', type) {
     const requestBody = {
-      filters: {'status': '1'},
+      filters: { 'status': '1' },
       query: query
     };
     this.courseBatchService.getUserList(requestBody).pipe(takeUntil(this.unsubscribe))
@@ -323,17 +325,17 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
           this.mentorList = userList.mentorList;
         }
       },
-      (err) => {
-        if (err.error && err.error.params.errmsg) {
-          this.toasterService.error(err.error.params.errmsg);
-        } else {
-          this.toasterService.error(this.resourceService.messages.fmsg.m0056);
-        }
-      });
+        (err) => {
+          if (err.error && err.error.params.errmsg) {
+            this.toasterService.error(err.error.params.errmsg);
+          } else {
+            this.toasterService.error(this.resourceService.messages.fmsg.m0056);
+          }
+        });
   }
 
   public removeMentor(mentor: any) {
-   _.remove(this.selectedMentors, (data) => {
+    _.remove(this.selectedMentors, (data) => {
       return data === mentor;
     });
   }
@@ -386,18 +388,26 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
     requestBody['mentors'] = _.concat(_.compact(requestBody['mentors']), selected);
     this.courseBatchService.updateBatch(requestBody).pipe(takeUntil(this.unsubscribe))
       .subscribe((response) => {
+        const payload = {
+          batchId: this.batchId,
+          userIds: requestBody.participants,
+          courseId: this.courseId
+        };
+        this.slutils.syncBatchApi(payload).subscribe(success => {
+
+        }, error => {})
         this.disableSubmitBtn = false;
         this.toasterService.success(this.resourceService.messages.smsg.m0034);
         this.reload();
       },
-      (err) => {
-        this.disableSubmitBtn = false;
-        if (err.error && err.error.params.errmsg) {
-          this.toasterService.error(err.error.params.errmsg);
-        } else {
-          this.toasterService.error(this.resourceService.messages.fmsg.m0052);
-        }
-      });
+        (err) => {
+          this.disableSubmitBtn = false;
+          if (err.error && err.error.params.errmsg) {
+            this.toasterService.error(err.error.params.errmsg);
+          } else {
+            this.toasterService.error(this.resourceService.messages.fmsg.m0052);
+          }
+        });
   }
   public redirect() {
     this.router.navigate(['./'], { relativeTo: this.activatedRoute.parent });
@@ -455,7 +465,7 @@ export class UpdateCourseBatchComponent implements OnInit, OnDestroy {
       this.batchUpdateForm.controls['description'].reset();
       this.batchUpdateForm.controls['endDate'].reset();
     } else {
-     this.batchUpdateForm.reset();
+      this.batchUpdateForm.reset();
     }
   }
 }

@@ -24,12 +24,12 @@
                         <div class="ui grid">
                             <div class="twelve wide column batch-des pb-0" *ngIf="batchDetails.description">
                                 <label>{{resourceService.frmelmnts.lbl.batchdescription}}</label>
-                                <div *ngIf="batchDetails.description" class="des-content">
-                                    <p *ngIf="!readMore"> {{ batchDetails.description | slice:0:120}}&nbsp;
-                                        <span class="ui cardsKnowMore mouse-pointer" *ngIf="batchDetails.description && batchDetails.description.length > 120 && readMore === false"
+                                <div *ngIf="batchDetails?.description" class="des-content">
+                                    <p *ngIf="!readMore"> {{ batchDetails?.description | slice:0:120}}&nbsp;
+                                        <span class="ui cardsKnowMore mouse-pointer" *ngIf="batchDetails?.description && batchDetails?.description.length > 120 && readMore === false"
                                             (click)="readMore = !readMore;">{{resourceService.frmelmnts.lbl.readmore}}</span>
                                     </p>
-                                    <p *ngIf="readMore" class="courseStructureDesc"> {{ batchDetails.description}}&nbsp;
+                                    <p *ngIf="readMore" class="courseStructureDesc"> {{ batchDetails?.description}}&nbsp;
                                         <span class="ui cardsKnowMore mouse-pointer" (click)="readMore = false;">{{resourceService.frmelmnts.lbl.readless}}</span>
                                     </p>
                                 </div>
@@ -39,7 +39,7 @@
                         <div class="ui grid batch-date">
                             <div class="twelve wide column start-date pb-0">
                                 <label>{{resourceService.frmelmnts.lbl.startdate}}</label>
-                                <span class="pl-10">{{batchDetails.startDate | dateFormat}}</span>
+                                <span class="pl-10">{{batchDetails?.startDate | dateFormat}}</span>
                             </div>
                             <div class="twelve wide column end-date" *ngIf="batchDetails.endDate">
                                 <label>{{resourceService.frmelmnts.lbl.enddate}}</label>
