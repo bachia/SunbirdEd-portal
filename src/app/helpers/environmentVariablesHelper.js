@@ -148,7 +148,7 @@
 'use strict'
 const env = process.env
 const fs = require('fs')
-const packageObj = JSON.parse(fs.readFileSync('../package.json', 'utf8'))
+const packageObj = JSON.parse(fs.readFileSync('package.json', 'utf8'))
 let envVariables = {
   LEARNER_URL: env.sunbird_learner_player_url || 'https://bodh.shikshalokam.org/api/',
   CONTENT_URL: env.sunbird_content_player_url || 'https://bodh.shikshalokam.org/api/',
