@@ -92,7 +92,10 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
         let filters = _.pickBy(this.queryParams, (value: Array<string> | string) => value && value.length);
         filters = _.omit(filters, ['key', 'sort_by', 'sortType', 'appliedFilters']);
         const softConstraintData = {
-    filters: {channel: this.userService.hashTagId,
+    filters: {
+        //Kiran - Commented filter
+
+        // channel: this.userService.hashTagId,
         board: [this.dataDrivenFilters.board]},
             softConstraints: _.get(this.activatedRoute.snapshot, 'data.softConstraints'),
             mode: 'soft'

@@ -98,7 +98,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
     console.log("Check if channel is there: "+this.userService.hashTagId);
     const softConstraintData = {
         //Sriram -- check this channel value
-      filters: {channel: this.userService.hashTagId,
+    //Kiran - Commented filter
+
+      filters: {
+        // channel: this.userService.hashTagId,
       board: [this.dataDrivenFilters.board]},
       softConstraints: _.get(this.activatedRoute.snapshot, 'data.softConstraints'),
       mode: 'soft'
@@ -196,9 +199,10 @@ export class ResourceComponent implements OnInit, OnDestroy {
   public viewAll(event) {
     const searchQuery = JSON.parse(event.searchQuery);
     //Sriram -- check this channel value
+    //Kiran - Commented filter
     const softConstraintsFilter = {
       board : [this.dataDrivenFilters.board],
-      channel: this.hashTagId,
+      // channel: this.hashTagId,
     };
     searchQuery.request.filters.softConstraintsFilter = JSON.stringify(softConstraintsFilter);
     searchQuery.request.filters.defaultSortBy = JSON.stringify(searchQuery.request.sort_by);
