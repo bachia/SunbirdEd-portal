@@ -1,3 +1,6 @@
+<div>
+    <app-srome-content-modal></app-srome-content-modal>
+</div>
 <div class="ui grid mt-5">
     <div class="twelve wide column ">
         <div class="ui grid">
@@ -89,12 +92,12 @@
                 </div>
                 <p class="workspaceinstuction">{{resourceService?.frmelmnts?.lbl?.contentuploaddescription}}</p>
             </div>
-            <!-- <div class="three wide column" *ngIf='permissionService.permissionAvailable' appPermission
+            <div class="three wide column" *ngIf='permissionService.permissionAvailable' appPermission
                 [permission]='contentUploadRole'>
                 <div class="ui link card workspacecontent" appTelemetryInteract
                     [telemetryInteractObject]="{id:'',type:'upload-content',ver:'1.0'}"
                     [telemetryInteractEdata]="{id:'uploadContent',type:'click',pageid:'UploadSCROMContent'}">
-                    <input type="file" style="opacity: 0.0; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height:100%;" accept=".zip" />
+                    <input type="file" (change)="uploadScromContente($event.target.files)" style="opacity: 0.0; position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height:100%;" accept=".zip" />
 
                     <div class="content">
                         <div class="textcontent">
@@ -104,7 +107,7 @@
                     </div>
                 </div>
                 <p class="workspaceinstuction">You can upload SCROM Complaint contents here</p>
-            </div> -->
+            </div>
         </div>
     </div>
 

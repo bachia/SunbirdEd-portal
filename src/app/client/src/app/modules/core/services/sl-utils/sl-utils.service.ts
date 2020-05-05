@@ -26,4 +26,18 @@ export class SlUtilsService {
       return response;
     }));
   }
+
+  scromContentCreate(contentName, payload): Observable<any> {
+    const option = {
+      url: 'kendra',
+      data: {
+        method: "POST",
+        url: slConfig.BASE_URL + slConfig.API_URL.SCROM_CONTENT_CREATE + contentName,
+        body: payload
+      },
+    };
+    return this.slKendraDataService.post(option).pipe(map((response: ServerResponse) => {
+      return response;
+    }));
+  }
 }

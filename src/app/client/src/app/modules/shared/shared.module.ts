@@ -7,7 +7,7 @@ import {
   PageSectionComponent, NoResultComponent, AppLoaderComponent, PlayerComponent,
   CollectionTreeComponent, FancyTreeComponent, CardComponent, CardCreationComponent, ShareLinkComponent, CollectionPlayerMetadataComponent,
   BrowserCompatibilityComponent, QrCodeModalComponent, RedirectComponent, CustomMultiSelectComponent,
-  InstallAppComponent, LockInfoPopupComponent, DataTableComponent, BatchCardComponent
+  InstallAppComponent, LockInfoPopupComponent, DataTableComponent, BatchCardComponent, SromeContentModalComponent
 } from './components';
 import {
   ConfigService, ResourceService, FileUploadService, ToasterService, WindowScrollService, BrowserCacheTtlService,
@@ -42,12 +42,13 @@ import { FullPageLoaderComponent } from './components/full-page-loader/full-page
     ShareLinkComponent, CollectionPlayerMetadataComponent, BrowserCompatibilityComponent, QrCodeModalComponent, CdnprefixPipe,
     RedirectComponent, CustomMultiSelectComponent, InstallAppComponent, LockInfoPopupComponent, ContentDirectionDirective,
     DataTableComponent,
-    FullPageLoaderComponent],
+    FullPageLoaderComponent,
+    SromeContentModalComponent],
   exports: [AppLoaderComponent, ContentCreditsComponent, AnnouncementInboxCardComponent, DateFormatPipe, DateFilterXtimeAgoPipe,
     PageSectionComponent, BatchCardComponent, NoResultComponent, CollectionTreeComponent, FancyTreeComponent,
     PlayerComponent, CardComponent, CardCreationComponent, FilterPipe, ShareLinkComponent, CollectionPlayerMetadataComponent,
     BrowserCompatibilityComponent, QrCodeModalComponent, CdnprefixPipe, InterpolatePipe, RedirectComponent, CustomMultiSelectComponent,
-    InstallAppComponent, LockInfoPopupComponent, ContentDirectionDirective, DataTableComponent, FullPageLoaderComponent]
+    InstallAppComponent, LockInfoPopupComponent, ContentDirectionDirective, DataTableComponent, FullPageLoaderComponent, SromeContentModalComponent]
 })
 export class SharedModule {
   static forRoot(): ModuleWithProviders {

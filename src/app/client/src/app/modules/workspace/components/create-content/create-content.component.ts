@@ -5,7 +5,7 @@ import { SuiModule } from 'ng2-semantic-ui/dist';
 import { SuiModalService, TemplateModalConfig, ModalTemplate } from 'ng2-semantic-ui';
 import { FrameworkService, PermissionService } from '@sunbird/core';
 import { IInteractEventInput, IImpressionEventInput } from '@sunbird/telemetry';
-import { ConceptPickerService } from '@sunbird/core';
+import { ConceptPickerService, SlUtilsService } from '@sunbird/core';
 @Component({
   selector: 'app-create-content',
   templateUrl: './create-content.component.html'
@@ -65,7 +65,8 @@ export class CreateContentComponent implements OnInit {
   * @param {ResourceService} resourceService Reference of ResourceService
  */
   constructor(configService: ConfigService, resourceService: ResourceService, private conceptPickerService: ConceptPickerService,
-    frameworkService: FrameworkService, permissionService: PermissionService, private activatedRoute: ActivatedRoute) {
+    frameworkService: FrameworkService, permissionService: PermissionService, private activatedRoute: ActivatedRoute,
+    private slUtils: SlUtilsService) {
     this.resourceService = resourceService;
     this.frameworkService = frameworkService;
     this.permissionService = permissionService;
@@ -91,5 +92,39 @@ export class CreateContentComponent implements OnInit {
         uri: this.activatedRoute.snapshot.data.telemetry.uri
       }
     };
+  }
+
+  uploadScromContente(file) {
+    console.log(file[0]);
+    // const obj = {
+    //   filename:file[0].name,
+    //   file: file[0]
+    // }
+    const formData = new FormData();
+    formData.append('contentData', file[0],file[0].name);
+    // const obj = {
+    //   contentData : file[0]
+    // }
+    // formData.append('newwww', 'byeeeeeee');
+    // console.log(formData.get('contentData'))
+    
+    // console.log(formData.) 
+    // formData.(element => {
+      
+    // });(val => {
+    //   console.log(val)
+    // })
+    // console.log(...formData);
+    // for (const iterator of Object.keys(formData)) {
+    //     console.log(iterator)
+    //     console.log("hiiiiiii")
+    // }
+    console.log("byeeeeeee")
+
+    this.slUtils.scromContentCreate("sampleeeeee", formData ).subscribe(success => {
+      console.log("successs");
+    }, error => {
+
+    })
   }
 }
