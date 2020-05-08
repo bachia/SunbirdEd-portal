@@ -2,14 +2,16 @@ import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 import { ICard } from '@sunbird/shared';
 import { Subject, Observable } from 'rxjs';
-  // Dependency injection creates new instance each time if used in router sub-modules
+// Dependency injection creates new instance each time if used in router sub-modules
 export class UtilService {
   static singletonInstance: UtilService;
   public showAppPopUp = false;
+  allOrganizations;
   constructor() {
     if (!UtilService.singletonInstance) {
       UtilService.singletonInstance = this;
     }
+    this.allOrganizations = JSON.parse(localStorage.getItem('allOrganization')) ;
     return UtilService.singletonInstance;
   }
   getDataForCard(data, staticData, dynamicFields, metaData) {
@@ -34,6 +36,7 @@ export class UtilService {
       gradeLevel: '',
       contentType: data.contentType,
       topic: this.getTopicSubTopic('topic', data.topic),
+      createdFor: data.createdFor || [],
       subTopic: this.getTopicSubTopic('subTopic', data.topic),
       metaData: {}
     };
@@ -45,6 +48,19 @@ export class UtilService {
       content['contentType'] = _.get(data.content, 'contentType') || '';
       content['orgDetails'] = _.get(data.content, 'orgDetails') || {};
     }
+    if(_.get(data, 'orgDetails') && data.orgDetails.orgName) {
+      if(data.createdFor && data.createdFor.length > 1 ) {
+        const filteredOrgs = data.createdFor.filter(org => org != "0124487522476933120")
+        const orgName = [];
+        for (const org of filteredOrgs) {
+          orgName.push(this.allOrganizations[org].name)
+        }
+        content.orgDetails.orgName = orgName;
+      }
+    } else {
+      content.orgDetails.orgName = "Ekstep Channel"
+    }
+
 
     if (data.gradeLevel && data.gradeLevel.length) {
         content['gradeLevel'] = _.isString(data.gradeLevel) ? data.gradeLevel : data.gradeLevel.join(',');

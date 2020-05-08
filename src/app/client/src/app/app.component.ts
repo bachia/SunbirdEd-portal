@@ -1,17 +1,18 @@
 import { environment } from '@sunbird/environment';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { TelemetryService, ITelemetryContext } from '@sunbird/telemetry';
-import { UtilService, ResourceService, ToasterService, IUserData, IUserProfile,
-NavigationHelperService, ConfigService, BrowserCacheTtlService } from '@sunbird/shared';
-import { Component, HostListener, OnInit, ViewChild, Inject} from '@angular/core';
-import { UserService, PermissionService, CoursesService, TenantService, OrgDetailsService, DeviceRegisterService } from '@sunbird/core';
+import {
+  UtilService, ResourceService, ToasterService, IUserData, IUserProfile,
+  NavigationHelperService, ConfigService, BrowserCacheTtlService
+} from '@sunbird/shared';
+import { Component, HostListener, OnInit, ViewChild, Inject } from '@angular/core';
+import { UserService, PermissionService, CoursesService, TenantService, OrgDetailsService, DeviceRegisterService, SlUtilsService } from '@sunbird/core';
 import * as _ from 'lodash';
 import { ProfileService } from '@sunbird/profile';
 import { Observable, of, throwError, combineLatest } from 'rxjs';
 import { first, filter, mergeMap, tap, map } from 'rxjs/operators';
 import { CacheService } from 'ng2-cache-service';
 import { DOCUMENT } from '@angular/platform-browser';
-
 /**
  * main app component
  */
@@ -63,14 +64,14 @@ export class AppComponent implements OnInit {
   */
   showAppPopUp = false;
   viewinBrowser = false;
-  constructor(  private cacheService: CacheService,  private browserCacheTtlService: BrowserCacheTtlService,
+  constructor(private cacheService: CacheService, private browserCacheTtlService: BrowserCacheTtlService,
     public userService: UserService, private navigationHelperService: NavigationHelperService,
     private permissionService: PermissionService, public resourceService: ResourceService,
     private deviceRegisterService: DeviceRegisterService, private courseService: CoursesService, private tenantService: TenantService,
     private telemetryService: TelemetryService, public router: Router, private configService: ConfigService,
     private orgDetailsService: OrgDetailsService, private activatedRoute: ActivatedRoute,
     private profileService: ProfileService, private toasterService: ToasterService, public utilService: UtilService,
-    @Inject(DOCUMENT) private _document: any) {
+    @Inject(DOCUMENT) private _document: any, private slUtils: SlUtilsService) {
   }
   /**
    * dispatch telemetry window unload event before browser closes
@@ -81,40 +82,44 @@ export class AppComponent implements OnInit {
     this.telemetryService.syncEvents();
   }
   ngOnInit() {
-    this.resourceService.initialize();
-    combineLatest( this.setSlug(), this.setDeviceId()).pipe(
-      mergeMap(data => {
-        this.navigationHelperService.initialize();
-        this.userService.initialize(this.userService.loggedIn);
-        if (this.userService.loggedIn) {
-          this.permissionService.initialize();
-          this.courseService.initialize();
-          return this.setUserDetails();
-        } else {
-          return this.setOrgDetails();
-        }
-      }))
-    .subscribe(data => {
-      this.tenantService.getTenantInfo(this.slug);
-      this.setPortalTitleLogo();
-      this.telemetryService.initialize(this.getTelemetryContext());
-      // Commented by SL as it is not required
-      // this.deviceRegisterService.registerDevice(this.channel);
-      // Commented by SL 
-      this.checkTncAndFrameWorkSelected();
-      this.initApp = true;
+    this.slUtils.getAllOrganizations().subscribe(success => {
+      this.resourceService.initialize();
+      combineLatest(this.setSlug(), this.setDeviceId()).pipe(
+        mergeMap(data => {
+          this.navigationHelperService.initialize();
+          this.userService.initialize(this.userService.loggedIn);
+          if (this.userService.loggedIn) {
+            this.permissionService.initialize();
+            this.courseService.initialize();
+            return this.setUserDetails();
+          } else {
+            return this.setOrgDetails();
+          }
+        }))
+        .subscribe(data => {
+          this.tenantService.getTenantInfo(this.slug);
+          this.setPortalTitleLogo();
+          this.telemetryService.initialize(this.getTelemetryContext());
+          // Commented by SL as it is not required
+          // this.deviceRegisterService.registerDevice(this.channel);
+          // Commented by SL 
+          this.checkTncAndFrameWorkSelected();
+          this.initApp = true;
+        }, error => {
+          this.initApp = true;
+        });
+      this.changeLanguageAttribute();
     }, error => {
-      this.initApp = true;
-    });
-    this.changeLanguageAttribute();
+
+    })
   }
 
   /**
    * checks if user has accepted the tnc and show tnc popup.
    */
-  public checkTncAndFrameWorkSelected () {
-    if ( _.has(this.userProfile, 'promptTnC') &&  _.has(this.userProfile, 'tncLatestVersion') &&
-      _.has(this.userProfile, 'tncLatestVersion')  &&  this.userProfile.promptTnC  === true) {
+  public checkTncAndFrameWorkSelected() {
+    if (_.has(this.userProfile, 'promptTnC') && _.has(this.userProfile, 'tncLatestVersion') &&
+      _.has(this.userProfile, 'tncLatestVersion') && this.userProfile.promptTnC === true) {
       this.showTermsAndCondPopUp = true;
     } else {
       this.checkFrameworkSelected();
@@ -132,14 +137,14 @@ export class AppComponent implements OnInit {
       if (this.userService.loggedIn && _.isEmpty(_.get(this.userProfile, 'framework'))) {
         this.showFrameWorkPopUp = true;
       }
-      }
+    }
     this.showFrameWorkPopUp = false;
   }
 
   /**
    * once tnc is accpeted from tnc popup on submit this function is triggered
    */
-  public onAcceptTnc () {
+  public onAcceptTnc() {
     this.showTermsAndCondPopUp = false;
     this.checkFrameworkSelected();
   }
@@ -163,7 +168,7 @@ export class AppComponent implements OnInit {
       return of(undefined);
     } else {
       return this.router.events.pipe(filter(event => event instanceof NavigationEnd), first(),
-      map(data => this.slug = _.get(this.activatedRoute, 'snapshot.root.firstChild.params.slug')));
+        map(data => this.slug = _.get(this.activatedRoute, 'snapshot.root.firstChild.params.slug')));
     }
   }
   /**
@@ -179,14 +184,14 @@ export class AppComponent implements OnInit {
         this.slug = _.get(this.userProfile, 'rootOrg.slug');
         this.channel = this.userService.hashTagId;
         return of(user.userProfile);
-    }));
+      }));
   }
   /**
    * set org Details for Anonymous user.
    */
   private setOrgDetails(): Observable<any> {
     return this.orgDetailsService.getOrgDetails(this.slug).pipe(
-      tap(data =>  {
+      tap(data => {
         this.orgDetails = data;
         this.channel = this.orgDetails.hashTagId;
       })
@@ -195,7 +200,7 @@ export class AppComponent implements OnInit {
   /**
    * returns telemetry context based on user loggedIn
    */
-  private getTelemetryContext(): ITelemetryContext  {
+  private getTelemetryContext(): ITelemetryContext {
     const buildNumber = (<HTMLInputElement>document.getElementById('buildNumber'));
     const version = buildNumber && buildNumber.value ? buildNumber.value.slice(0, buildNumber.value.lastIndexOf('.')) : '1.0';
     if (this.userService.loggedIn) {
@@ -253,11 +258,11 @@ export class AppComponent implements OnInit {
    */
   private setPortalTitleLogo(): void {
     this.tenantService.tenantData$.subscribe(data => {
-        if (!data.err) {
-          document.title = this.userService.rootOrgName || data.tenantData.titleName;
-          document.querySelector('link[rel*=\'icon\']').setAttribute('href', data.tenantData.favicon);
-        }
-      });
+      if (!data.err) {
+        document.title = this.userService.rootOrgName || data.tenantData.titleName;
+        document.querySelector('link[rel*=\'icon\']').setAttribute('href', data.tenantData.favicon);
+      }
+    });
   }
   /**
    * updates user framework. After update redirects to library
@@ -275,7 +280,7 @@ export class AppComponent implements OnInit {
       this.toasterService.warning(this.resourceService.messages.emsg.m0012);
       this.frameWorkPopUp.modal.deny();
       this.router.navigate(['/resources']);
-      this.cacheService.set('showFrameWorkPopUp', 'installApp' );
+      this.cacheService.set('showFrameWorkPopUp', 'installApp');
     });
   }
   viewInBrowser() {
@@ -283,13 +288,13 @@ export class AppComponent implements OnInit {
   }
   closeIcon() {
     this.showFrameWorkPopUp = false;
-    this.cacheService.set('showFrameWorkPopUp', 'installApp' );
+    this.cacheService.set('showFrameWorkPopUp', 'installApp');
   }
   changeLanguageAttribute() {
     this.resourceService.languageSelected$
       .subscribe(item => {
         this._document.documentElement.lang = item.value;
-        this._document.documentElement.dir =  item.dir;
+        this._document.documentElement.dir = item.dir;
       });
   }
 }

@@ -202,9 +202,6 @@ export class ViewAllComponent implements OnInit, OnDestroy {
         this.totalCount = response.contentData.result.count;
         this.pager = this.paginationService.getPager(response.contentData.result.count, this.pageNumber, this.pageLimit);
         this.searchList = this.formatSearchresults(response);
-        console.log("=============================VIEW ALL get Contents=============================");
-        console.log(response);
-        console.log("===============================================================================");
       } else {
         this.noResult = true;
         this.noResultMessage = {

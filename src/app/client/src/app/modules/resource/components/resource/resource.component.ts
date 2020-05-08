@@ -148,26 +148,31 @@ export class ResourceComponent implements OnInit, OnDestroy {
       element.contents = this.utilService.getDataForCard(contents, constantData, dynamicFields, metaData);
       if (element.contents && element.contents.length) {
         _.forEach(element.contents, (content, index) => {
-           if(contentCreators[content.metaData.identifier] != "-" ) {
-             this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
-               element.contents[index]["orgDetails"]["orgName"] = "";
-               var orgs_count = upData.result.response.organisations.length;
-               if(orgs_count > 1) {
-                 for(var org_index = 0; org_index < orgs_count; org_index++) {
-                   if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
-                     if(element.contents[index]["orgDetails"]["orgName"] != "") {
-                       element.contents[index]["orgDetails"]["orgName"] += ", ";
-                     }
-                     element.contents[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
-                   }
-                 }
-               } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
-                 element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
-               } else if (orgs_count == 1) {
-                 element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
-               }
-             });
-           }
+          // if(content.orgDetails.orgName) {
+
+          // } else {
+          //   content.orgDetails.orgName = "Ekstep Channel"
+          // }
+      //      if(contentCreators[content.metaData.identifier] != "-" ) {
+      //        this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
+      //          element.contents[index]["orgDetails"]["orgName"] = "";
+      //          var orgs_count = upData.result.response.organisations.length;
+      //          if(orgs_count > 1) {
+      //            for(var org_index = 0; org_index < orgs_count; org_index++) {
+      //              if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+      //                if(element.contents[index]["orgDetails"]["orgName"] != "") {
+      //                  element.contents[index]["orgDetails"]["orgName"] += ", ";
+      //                }
+      //                element.contents[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
+      //              }
+      //            }
+      //          } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+      //            element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+      //          } else if (orgs_count == 1) {
+      //            element.contents[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+      //          }
+      //        });
+      //      }
        });
        collector.push(element);
       }

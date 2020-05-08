@@ -8,6 +8,7 @@ export interface ICard {
     creator?: string;
     orgDetails?: { orgName: string, email: string};
     gradeLevel?: any;
+    createdFor?: Array<string>;
     resourceType?: string;
     maxCount?: number;
     progress?: number;

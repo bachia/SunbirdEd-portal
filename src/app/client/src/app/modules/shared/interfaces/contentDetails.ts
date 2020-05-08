@@ -43,6 +43,8 @@ export interface ContentData {
     userName: string;
     pkgVersion?: string;
     visibility?: string;
+    orgDetails?: any;
+    createdFor?: any;
 }
 
 export interface ContentCreditsData {

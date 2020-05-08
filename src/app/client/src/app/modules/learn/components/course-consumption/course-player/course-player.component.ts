@@ -1,7 +1,7 @@
 import { combineLatest, Subject } from 'rxjs';
 import { takeUntil, first, mergeMap, map } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { UserService, BreadcrumbsService, PermissionService, CoursesService } from '@sunbird/core';
+import { UserService, BreadcrumbsService, PermissionService, CoursesService, SlUtilsService } from '@sunbird/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
 import {
@@ -108,7 +108,8 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
     private toasterService: ToasterService, private resourceService: ResourceService, public breadcrumbsService: BreadcrumbsService,
     private cdr: ChangeDetectorRef, public courseBatchService: CourseBatchService, public permissionService: PermissionService,
     public externalUrlPreviewService: ExternalUrlPreviewService, public coursesService: CoursesService,
-    private courseProgressService: CourseProgressService, private deviceDetectorService: DeviceDetectorService) {
+    private courseProgressService: CourseProgressService, private deviceDetectorService: DeviceDetectorService,
+    private slUtils: SlUtilsService) {
     this.router.onSameUrlNavigation = 'ignore';
     this.collectionTreeOptions = this.configService.appConfig.collectionTreeOptions;
   }
@@ -130,6 +131,7 @@ export class CoursePlayerComponent implements OnInit, OnDestroy {
           .pipe(map(courseHierarchy => ({ courseHierarchy })));
       })).subscribe(({courseHierarchy, enrolledBatchDetails}: any) => {
         this.courseHierarchy = courseHierarchy;
+        this.courseHierarchy.orgDetails = this.slUtils.filterOrgName(courseHierarchy.orgDetails, courseHierarchy.createdFor)
         this.contributions = _.join(_.map(this.courseHierarchy.contentCredits, 'name'));
         this.courseInteractObject = {
           id: this.courseHierarchy.identifier,

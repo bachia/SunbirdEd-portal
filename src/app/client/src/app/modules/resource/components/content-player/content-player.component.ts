@@ -1,7 +1,7 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService, PlayerService, CopyContentService, PermissionService, BreadcrumbsService } from '@sunbird/core';
+import { UserService, PlayerService, CopyContentService, PermissionService, BreadcrumbsService, SlUtilsService } from '@sunbird/core';
 import * as _ from 'lodash';
 import { INoteData } from '@sunbird/notes';
 import {
@@ -86,7 +86,7 @@ export class ContentPlayerComponent implements OnInit {
     public toasterService: ToasterService, public windowScrollService: WindowScrollService, public playerService: PlayerService,
     public copyContentService: CopyContentService, public permissionService: PermissionService,
     public contentUtilsServiceService: ContentUtilsServiceService, public breadcrumbsService: BreadcrumbsService,
-    private configService: ConfigService) {
+    private configService: ConfigService, private slutils: SlUtilsService) {
   }
   /**
    *
@@ -149,6 +149,7 @@ export class ContentPlayerComponent implements OnInit {
           };
           this.playerConfig = this.playerService.getConfig(contentDetails);
           this.contentData = response.result.content;
+          this.contentData.orgDetails = this.slutils.filterOrgName(this.contentData.orgDetails, this.contentData.createdFor);
           if (this.contentData.mimeType === this.configService.appConfig.PLAYER_CONFIG.MIME_TYPE.xUrl) {
             setTimeout(() => {
               this.showExtContentMsg = true;

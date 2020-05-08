@@ -101,7 +101,7 @@ export class CreateContentComponent implements OnInit {
     //   file: file[0]
     // }
     const formData = new FormData();
-    formData.append('contentData', file[0],file[0].name);
+    formData.append('contentData', file[0]);
     // const obj = {
     //   contentData : file[0]
     // }
