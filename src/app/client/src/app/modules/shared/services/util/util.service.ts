@@ -11,7 +11,7 @@ export class UtilService {
     if (!UtilService.singletonInstance) {
       UtilService.singletonInstance = this;
     }
-    this.allOrganizations = JSON.parse(localStorage.getItem('allOrganization')) ;
+    this.allOrganizations = JSON.parse(localStorage.getItem('allOrganization'));
     return UtilService.singletonInstance;
   }
   getDataForCard(data, staticData, dynamicFields, metaData) {
@@ -48,8 +48,8 @@ export class UtilService {
       content['contentType'] = _.get(data.content, 'contentType') || '';
       content['orgDetails'] = _.get(data.content, 'orgDetails') || {};
     }
-    if(_.get(data, 'orgDetails') && data.orgDetails.orgName) {
-      if(data.createdFor && data.createdFor.length > 1 ) {
+    if (_.get(data, 'orgDetails') && data.orgDetails.orgName) {
+      if (data.createdFor && data.createdFor.length > 1) {
         const filteredOrgs = data.createdFor.filter(org => org != "0124487522476933120")
         const orgName = [];
         for (const org of filteredOrgs) {
@@ -57,13 +57,35 @@ export class UtilService {
         }
         content.orgDetails.orgName = orgName;
       }
+    } else if (data.content && !data.orgDetails) { //changes for My Course Cards
+      if (_.get(data.content, 'orgDetails') && data.content.orgDetails.orgName) {
+        if (data.content.createdFor && data.content.createdFor.length > 1) {
+          const filteredOrgs = data.content.createdFor.filter(org => org != "0124487522476933120")
+          const orgName = [];
+          for (const org of filteredOrgs) {
+            orgName.push(this.allOrganizations[org].name)
+          }
+          content.orgDetails.orgName = orgName;
+        } 
+      } else {
+        content.orgDetails.orgName = data.content.createdFor.length ? this.allOrganizations[data.content.createdFor[0]].name : "EK step Channel";
+        content.orgDetails.orgName =  content.orgDetails.orgName ? content.orgDetails.orgName :'EK step Channel'
+      }
+    } else if (!data.orgDetails) { //changes for Search Page changes
+      if (data.organisation && data.organisation.length) {
+        const filteredOrgs = data.organisation.filter(org => org != "ShikshaLokam")
+        const orgName = [];
+        content.orgDetails.orgName = filteredOrgs;
+      } else {
+        content.orgDetails.orgName = "Ekstep Channel"
+      }
     } else {
       content.orgDetails.orgName = "Ekstep Channel"
     }
 
 
     if (data.gradeLevel && data.gradeLevel.length) {
-        content['gradeLevel'] = _.isString(data.gradeLevel) ? data.gradeLevel : data.gradeLevel.join(',');
+      content['gradeLevel'] = _.isString(data.gradeLevel) ? data.gradeLevel : data.gradeLevel.join(',');
     }
     _.forIn(staticData, (value, key1) => {
       content[key1] = value;
@@ -82,7 +104,7 @@ export class UtilService {
     return content;
   }
 
-  public getTopicSubTopic (type, topic) {
+  public getTopicSubTopic(type, topic) {
     if (type === 'topic') {
       return _.size(topic) > 0 ? topic[0] : '';
     } else {
@@ -98,9 +120,9 @@ export class UtilService {
 
   public manipulateSoftConstraint(filter, softConstraintData, frameWorkData?: any) {
     if (!_.isEmpty(frameWorkData) && !filter) {
-      return {filters: _.omit(frameWorkData, ['id']), mode: 'soft'};
+      return { filters: _.omit(frameWorkData, ['id']), mode: 'soft' };
     } else if (filter) {
-     return false;
+      return false;
     } else {
       return softConstraintData;
     }

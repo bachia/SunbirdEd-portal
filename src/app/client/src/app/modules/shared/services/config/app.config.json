@@ -92,7 +92,7 @@
   },
   "Course": {
     "contentApiQueryParams": {
-      "orgdetails": "orgName,email"
+      "orgdetails": "orgName,email,createdFor,orgDetails"
     },
     "otherCourse": {
       "constantData": {
