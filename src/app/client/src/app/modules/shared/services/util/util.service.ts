@@ -6,12 +6,12 @@ import { Subject, Observable } from 'rxjs';
 export class UtilService {
   static singletonInstance: UtilService;
   public showAppPopUp = false;
-  allOrganizations;
+  allOrganizations ={};
   constructor() {
     if (!UtilService.singletonInstance) {
       UtilService.singletonInstance = this;
     }
-    this.allOrganizations = JSON.parse(localStorage.getItem('allOrganization'));
+    this.allOrganizations = JSON.parse(localStorage.getItem('allOrganization')) ? JSON.parse(localStorage.getItem('allOrganization')) : {};
     return UtilService.singletonInstance;
   }
   getDataForCard(data, staticData, dynamicFields, metaData) {
@@ -53,7 +53,7 @@ export class UtilService {
         const filteredOrgs = data.createdFor.filter(org => org != "0124487522476933120")
         const orgName = [];
         for (const org of filteredOrgs) {
-          orgName.push(this.allOrganizations[org].name)
+          this.allOrganizations[org] ? orgName.push(this.allOrganizations[org].name) : null
         }
         content.orgDetails.orgName = orgName;
       }
@@ -63,12 +63,12 @@ export class UtilService {
           const filteredOrgs = data.content.createdFor.filter(org => org != "0124487522476933120")
           const orgName = [];
           for (const org of filteredOrgs) {
-            orgName.push(this.allOrganizations[org].name)
+            this.allOrganizations[org]  ? orgName.push(this.allOrganizations[org].name) : null
           }
           content.orgDetails.orgName = orgName;
         } 
       } else {
-        content.orgDetails.orgName = data.content.createdFor.length ? this.allOrganizations[data.content.createdFor[0]].name : "EK step Channel";
+        content.orgDetails.orgName = data.content.createdFor.length ? (this.allOrganizations[data.content.createdFor[0]] ? this.allOrganizations[data.content.createdFor[0]].name : null) : "EK step Channel";
         content.orgDetails.orgName =  content.orgDetails.orgName ? content.orgDetails.orgName :'EK step Channel'
       }
     } else if (!data.orgDetails) { //changes for Search Page changes

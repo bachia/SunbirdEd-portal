@@ -140,31 +140,31 @@ export class LibrarySearchComponent implements OnInit, OnDestroy {
                   }
                 });
                 this.contentList = this.utilService.getDataForCard(data.result.content, constantData, dynamicFields, metaData);
-                if (this.contentList && this.contentList.length) {
-                  _.forEach(this.contentList, (content, index) => {
-                    //Sriram - Extended Fix for organization. TODO: cleanup required.
-                    if(contentCreators[content.metaData.identifier] != "-" ) {
-                      this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
-                        this.contentList[index]["orgDetails"]["orgName"] = "";
-                        var orgs_count = upData.result.response.organisations.length;
-                        if(orgs_count > 1) {
-                          for(var org_index = 0; org_index < orgs_count; org_index++) {
-                            if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
-                              if(this.contentList[index]["orgDetails"]["orgName"] != "") {
-                                this.contentList[index]["orgDetails"]["orgName"] += ", ";
-                              }
-                              this.contentList[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
-                            }
-                          }
-                        } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
-                          this.contentList[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
-                        } else if (orgs_count == 1) {
-                          this.contentList[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
-                        }
-                      });
-                    }
-                  });
-                }
+                // if (this.contentList && this.contentList.length) {
+                //   _.forEach(this.contentList, (content, index) => {
+                //     //Sriram - Extended Fix for organization. TODO: cleanup required.
+                //     if(contentCreators[content.metaData.identifier] != "-" ) {
+                //       this.userService.getUserProfileById(contentCreators[content.metaData.identifier]).subscribe((upData: any) => {
+                //         this.contentList[index]["orgDetails"]["orgName"] = "";
+                //         var orgs_count = upData.result.response.organisations.length;
+                //         if(orgs_count > 1) {
+                //           for(var org_index = 0; org_index < orgs_count; org_index++) {
+                //             if(upData.result.response.rootOrgId != upData.result.response.organisations[org_index].organisationId) {
+                //               if(this.contentList[index]["orgDetails"]["orgName"] != "") {
+                //                 this.contentList[index]["orgDetails"]["orgName"] += ", ";
+                //               }
+                //               this.contentList[index]["orgDetails"]["orgName"] += upData.result.response.organisations[org_index].orgName;
+                //             }
+                //           }
+                //         } else if ((orgs_count == 1) && (upData.result.response.rootOrgId != upData.result.response.organisations[0].organisationId)) {
+                //           this.contentList[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+                //         } else if (orgs_count == 1) {
+                //           this.contentList[index]["orgDetails"]["orgName"] = upData.result.response.organisations[0].orgName;
+                //         }
+                //       });
+                //     }
+                //   });
+                // }
             }, err => {
                 this.showLoader = false;
                 this.contentList = [];

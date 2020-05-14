@@ -83,35 +83,36 @@ export class AppComponent implements OnInit {
   }
   ngOnInit() {
     this.slUtils.getAllOrganizations().subscribe(success => {
-      this.resourceService.initialize();
-      combineLatest(this.setSlug(), this.setDeviceId()).pipe(
-        mergeMap(data => {
-          this.navigationHelperService.initialize();
-          this.userService.initialize(this.userService.loggedIn);
-          if (this.userService.loggedIn) {
-            this.permissionService.initialize();
-            this.courseService.initialize();
-            return this.setUserDetails();
-          } else {
-            return this.setOrgDetails();
-          }
-        }))
-        .subscribe(data => {
-          this.tenantService.getTenantInfo(this.slug);
-          this.setPortalTitleLogo();
-          this.telemetryService.initialize(this.getTelemetryContext());
-          // Commented by SL as it is not required
-          // this.deviceRegisterService.registerDevice(this.channel);
-          // Commented by SL 
-          this.checkTncAndFrameWorkSelected();
-          this.initApp = true;
-        }, error => {
-          this.initApp = true;
-        });
-      this.changeLanguageAttribute();
+
     }, error => {
 
     })
+    this.resourceService.initialize();
+    combineLatest(this.setSlug(), this.setDeviceId()).pipe(
+      mergeMap(data => {
+        this.navigationHelperService.initialize();
+        this.userService.initialize(this.userService.loggedIn);
+        if (this.userService.loggedIn) {
+          this.permissionService.initialize();
+          this.courseService.initialize();
+          return this.setUserDetails();
+        } else {
+          return this.setOrgDetails();
+        }
+      }))
+      .subscribe(data => {
+        this.tenantService.getTenantInfo(this.slug);
+        this.setPortalTitleLogo();
+        this.telemetryService.initialize(this.getTelemetryContext());
+        // Commented by SL as it is not required
+        // this.deviceRegisterService.registerDevice(this.channel);
+        // Commented by SL 
+        this.checkTncAndFrameWorkSelected();
+        this.initApp = true;
+      }, error => {
+        this.initApp = true;
+      });
+    this.changeLanguageAttribute();
   }
 
   /**

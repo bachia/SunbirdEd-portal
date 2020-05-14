@@ -95,7 +95,7 @@ export class SlUtilsService {
         const filteredOrgs = createdFor.filter(org => org != "0124487522476933120")
         const orgName = [];
         for (const org of filteredOrgs) {
-          orgName.push(this.allOrganizations[org].name)
+          this.allOrganizations[org] ?  orgName.push(this.allOrganizations[org].name) : "";
         }
         orgDetails.orgName = orgName;
       }
