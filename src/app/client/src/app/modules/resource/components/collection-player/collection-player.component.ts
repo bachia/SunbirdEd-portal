@@ -1,7 +1,7 @@
 
 import { mergeMap, first, map, catchError } from 'rxjs/operators';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PlayerService, CollectionHierarchyAPI, PermissionService, CopyContentService } from '@sunbird/core';
+import { PlayerService, CollectionHierarchyAPI, PermissionService, CopyContentService, SlUtilsService } from '@sunbird/core';
 import { Observable, Subscription } from 'rxjs';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import * as _ from 'lodash';
@@ -103,7 +103,7 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy {
   constructor(route: ActivatedRoute, playerService: PlayerService,
     windowScrollService: WindowScrollService, router: Router, public navigationHelperService: NavigationHelperService,
     private toasterService: ToasterService, private resourceService: ResourceService,
-    public permissionService: PermissionService, public copyContentService: CopyContentService,
+    public permissionService: PermissionService, public copyContentService: CopyContentService, private utils: SlUtilsService,
     public contentUtilsServiceService: ContentUtilsServiceService, config: ConfigService, private configService: ConfigService) {
     this.route = route;
     this.playerService = playerService;
@@ -230,6 +230,7 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy {
         return this.getCollectionHierarchy(params.collectionId);
       }), )
       .subscribe((data) => {
+        debugger
         this.collectionTreeNodes = data;
         this.setTelemetryData();
         this.loader = false;
@@ -288,7 +289,9 @@ export class CollectionPlayerComponent implements OnInit, OnDestroy {
     }
     return this.playerService.getCollectionHierarchy(collectionId, option).pipe(
       map((response) => {
+        debugger
         this.collectionData = response.result.content;
+        this.collectionData.orgDetails = this.utils.filterOrgName(this.collectionData.orgDetails, this.collectionData.createdFor)
         this.contentType = _.get(response, 'result.content.contentType');
         this.mimeType = _.get(response, 'result.content.mimeType');
         this.collectionTitle = _.get(response, 'result.content.name') || 'Untitled Collection';
