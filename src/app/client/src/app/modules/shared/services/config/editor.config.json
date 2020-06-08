@@ -17,7 +17,6 @@
             },
             "searchCriteria": {
                 "filters": {
-                    "channel":["0124487522476933120"]
                 }
             },
             "corePluginsPackaged": true,
@@ -290,7 +289,6 @@
             "aws_s3_urls": [],
             "searchCriteria": {
                 "filters": {
-                    "channel":["0124487522476933120"]
                 }
             },
             "plugins": [
@@ -365,7 +363,6 @@
             
             "searchCriteria": {
                 "filters": {
-                    "channel":["0124487522476933120"]
                 }
             },
         
