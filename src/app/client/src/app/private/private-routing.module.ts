@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 const appRoutes: Routes = [
+  { path: 'workspace', redirectTo: '/resources', pathMatch: 'prefix' },
   {
     path: 'learn',
     loadChildren: 'app/modules/learn/learn.module#LearnModule'
@@ -14,10 +15,10 @@ const appRoutes: Routes = [
     path: 'search',
     loadChildren: 'app/modules/search/search.module#SearchModule'
   },
-  {
-    path: 'workspace',
-    loadChildren: 'app/modules/workspace/workspace.module#WorkspaceModule'
-  }
+  // {
+  //   path: 'workspace',
+  //   loadChildren: 'app/modules/workspace/workspace.module#WorkspaceModule'
+  // },
 ];
 
 @NgModule({
