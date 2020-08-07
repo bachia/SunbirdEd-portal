@@ -15,7 +15,7 @@
 			 routerLink="/learn">
 			{{resourceService?.frmelmnts?.tab?.courses}}
 		</a>
-		<!-- <a class="item" 
+		<a class="item" 
 			 [class.active]="router.isActive('/workspace')" 
 			 appTelemetryInteract [telemetryInteractEdata]="workspaceMenuIntractEdata" 
 			 *ngIf='permissionService.permissionAvailable' 
@@ -23,7 +23,7 @@
 			 [routerLink]="[navigateToWorkspace()]" 
 			 tabindex="0">
 			{{resourceService?.frmelmnts?.tab?.workspace}}
-		</a> -->
+		</a>
 		<a class="item" 
 			 appTelemetryInteract [telemetryInteractEdata]="helpMenuIntractEdata" 
 			 *ngIf='permissionService.permissionAvailable && helpLinkVisibility.toLowerCase() === "true"' 
